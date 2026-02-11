@@ -1,3 +1,4 @@
+
 const STATUS = {
   SUCCESS: 200,
   CREATED: 201,
@@ -9,4 +10,4 @@ const STATUS = {
 };
 
 
-module.exports = {STATUS};
+export {STATUS};

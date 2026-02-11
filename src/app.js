@@ -1,17 +1,17 @@
-const express = require("express");
-const cors = require("cors");
-const bodyParser = require("body-parser");
-const responseMiddleware = require("./middleware/responseGenerator");
+import express from "express";
+import cors from "cors";
+import bodyParser from "body-parser";
+import responseGenerator from "./middleware/responseGenerator.js";
 
 const app = express();
 
 app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use(responseMiddleware);
+app.use(responseGenerator);
 
 app.get("/", (req, res) => {
   res.success("Server Up and Running", { status: "ok" });
 });
 
-module.exports = app;
+export default app;

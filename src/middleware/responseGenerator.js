@@ -1,6 +1,8 @@
-module.exports = (req, res, next) => {
+import { STATUS } from "../utils/constants.js";
+
+const responseGenerator = (req, res, next) => {
   res.success = (message = "Success", content = null) => {
-    return res.status(200).json({ code: 200, message, content });
+    return res.status(STATUS.SUCCESS).json({ code: 200, message, content });
   };
 
   res.created = (message = "Created", content = null) => {
@@ -29,3 +31,5 @@ module.exports = (req, res, next) => {
 
   next();
 };
+
+export default responseGenerator;
