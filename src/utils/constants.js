@@ -9,4 +9,10 @@ const STATUS = {
 };
 
 
-export {STATUS};
+const ROLES = {
+  ADMIN: "ADMIN",
+  USER: "USER"
+};
+
+
+export {STATUS , ROLES};
