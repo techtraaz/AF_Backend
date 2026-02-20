@@ -13,4 +13,4 @@ const vocabularySchema = new mongoose.Schema({
     ]
 }, { timestamps: true })
 
-export default mongoose.model("Vocabulary", vocabularySchema);
+export default mongoose.models.Vocabulary || mongoose.model("Vocabulary", vocabularySchema);

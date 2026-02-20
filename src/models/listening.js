@@ -10,4 +10,4 @@ const listeningSchema = new mongoose.Schema({
 
 
 
-export default mongoose.model("Listening", listeningSchema);
+export default mongoose.models.Listening || mongoose.model("Listening", listeningSchema);

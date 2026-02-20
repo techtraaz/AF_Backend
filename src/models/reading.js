@@ -14,4 +14,4 @@ const readingSchema = new mongoose.Schema({
     ]
 }, { timestamps: true })
 
-export default mongoose.model("Reading", readingSchema);
+export default mongoose.models.Reading || mongoose.model("Reading", readingSchema);
