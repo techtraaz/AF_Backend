@@ -7,12 +7,12 @@ const createProfile = async (req, res) => {
             req.user.role,
             req.body
         );
-        return res.created(profile, "Profile created successfully");
+        return res.created("Profile created successfully", profile);
     } catch (error) {
         if (error.message === "Profile already exists") {
             return res.conflict(error.message);
         }
-        return res.serverError(error.message);
+        return res.error(error.message);
     }
 };
 
@@ -22,12 +22,12 @@ const getProfile = async (req, res) => {
             req.user._id,
             req.user.role
         );
-        return res.success(profile, "Profile fetched successfully");
+        return res.success("Profile fetched successfully", profile);
     } catch (error) {
         if (error.message === "Profile not found") {
             return res.notFound(error.message);
         }
-        return res.serverError(error.message);
+        return res.error(error.message);
     }
 };
 
@@ -38,12 +38,12 @@ const updateProfile = async (req, res) => {
             req.user.role,
             req.body
         );
-        return res.success(profile, "Profile updated successfully");
+        return res.success("Profile updated successfully", profile);
     } catch (error) {
         if (error.message === "Profile not found") {
             return res.notFound(error.message);
         }
-        return res.serverError(error.message);
+        return res.error(error.message);
     }
 };
 

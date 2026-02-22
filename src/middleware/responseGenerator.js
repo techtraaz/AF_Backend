@@ -25,6 +25,10 @@ const responseGenerator = (req, res, next) => {
     return res.status(STATUS.NOT_FOUND).json({ code: 404, message, content });
   };
 
+  res.conflict = (message = "Conflict", content = null) => {
+    return res.status(STATUS.CONFLICT).json({ code: 409, message, content });
+  };
+
   res.error = (message = "Internal server error", content = null) => {
     return res.status(STATUS.SERVER_ERROR).json({ code: 500, message, content });
   };
