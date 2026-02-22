@@ -1,6 +1,6 @@
-import RefugeeProfile from "../models/refugeeProfile.js";
-import ContentContributorProfile from "../models/contentContributorProfile.js";
-import AdminProfile from "../models/adminProfile.js";
+import RefugeeProfile from "../models/refugee.js";
+import ContentContributorProfile from "../models/contentContributor.js";
+import AdminProfile from "../models/admin.js";
 import { ROLES } from "../utils/constants.js";
 
 // Helper: get the correct model by role

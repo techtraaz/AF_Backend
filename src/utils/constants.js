@@ -28,4 +28,12 @@ const ACCESS_LEVELS = {
   STANDARD: "STANDARD",
 };
 
-export {STATUS , ROLES, ORGANIZATION_TYPES, ACCESS_LEVELS};
+const EDUCATION_LEVELS = {
+  NONE: "none",
+  PRIMARY: "primary",
+  SECONDARY: "secondary",
+  HIGHER: "higher",
+  UNIVERSITY: "university"
+};
+
+export {STATUS , ROLES, ORGANIZATION_TYPES, ACCESS_LEVELS, EDUCATION_LEVELS};
