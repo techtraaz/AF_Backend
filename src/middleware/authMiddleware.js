@@ -31,5 +31,11 @@ const authorizeAdmin = (req, res, next) => {
     next();
 };
 
+const authorizeRoles = (roles) => (req, res, next) => {
+    if (!roles.includes(req.user.role)) {
+        return res.forbidden("Access denied for your role");
+    }
+    next();
+};
 
-export {authenticate , authorizeAdmin}
+export {authenticate , authorizeAdmin, authorizeRoles}
