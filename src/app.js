@@ -5,6 +5,7 @@ import responseGenerator from "./middleware/responseGenerator.js";
 
 import authRoutes from "./routes/authRoutes.js";
 import quizRoutes from "./routes/quiz/quizIndex.js";
+import courseRoutes from "./routes/course/courseRoutes.js";
 import {authenticate, authorizeAdmin} from "./middleware/authMiddleware.js";
 import {swaggerSpec} from "./docs/swagger.js";
 import swaggerUi from "swagger-ui-express";
@@ -20,6 +21,7 @@ app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 app.use("/api/auth", authRoutes);
 app.use("/api/quiz", quizRoutes);
+app.use("/api/course", courseRoutes);
 
 app.get("/", (req, res) => {
   res.success("Server Up and Running", { status: "ok" });
