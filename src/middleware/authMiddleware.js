@@ -31,11 +31,19 @@ const authorizeAdmin = (req, res, next) => {
     next();
 };
 
-const authorizeRoles = (roles) => (req, res, next) => {
-    if (!roles.includes(req.user.role)) {
-        return res.forbidden("Access denied for your role");
+const authorizeRefugee = (req, res, next) => {
+    if (req.user.role !== ROLES.REFUGEE) {
+        return res.forbidden("Refugee access required");
     }
     next();
 };
 
-export {authenticate , authorizeAdmin, authorizeRoles}
+const authorizeRoles = (...roles) => (req, res, next) => {
+    const allowedRoles = roles.length > 0 ? roles : Object.values(ROLES);
+    if (!allowedRoles.includes(req.user.role)) {
+        return res.forbidden("Access denied");
+    }
+    next();
+};
+
+export {authenticate , authorizeAdmin, authorizeRoles, authorizeRefugee};

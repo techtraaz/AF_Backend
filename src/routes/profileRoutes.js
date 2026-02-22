@@ -1,15 +1,38 @@
 import express from "express";
 import { createProfile, getProfile, updateProfile } from "../controller/profileController.js";
-import { authenticate } from "../middleware/authMiddleware.js";
-import { authorizeRoles } from "../middleware/authMiddleware.js";
-import { ROLES } from "../utils/constants.js";
+import { authenticate, authorizeAdmin, authorizeRefugee } from "../middleware/authMiddleware.js";
+import { } from "../middleware/authMiddleware.js";
 
 const router = express.Router();
 
-const allowedRoles = [ROLES.REFUGEE, ROLES.CONTENT_CONTRIBUTOR, ROLES.ADMIN];
+router.post(
+    "/create-refugee", 
+    authenticate, 
+    authorizeRefugee, 
+    createProfile);
 
-router.post("/create", authenticate, authorizeRoles(allowedRoles), createProfile);
-router.get("/get", authenticate, authorizeRoles(allowedRoles), getProfile);
-router.patch("/update", authenticate, authorizeRoles(allowedRoles), updateProfile);
+router.post(
+    "/create-contributor", 
+    authenticate, 
+    authorizeAdmin, 
+    createProfile);
+
+router.post(
+    "/create-admin", 
+    authenticate, 
+    authorizeAdmin, 
+    createProfile);
+
+router.patch(
+    "/update", 
+    authenticate, 
+    authorizeRoles(), 
+    updateProfile);
+
+router.get(
+    "/get", 
+    authenticate,
+    authorizeRoles(), 
+    getProfile);
 
 export default router;
