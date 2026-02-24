@@ -1,6 +1,6 @@
 
-import Lesson from "../models/lesson.js";
-import Vocabulary from "../models/vocab.js";
+import Lesson from "../../models/lesson/lesson.js";
+import Vocabulary from "../../models/lesson/vocab.js";
 
 const createVocabulary = async (lessonId, data) => {
     const lesson = await Lesson.findById(lessonId);

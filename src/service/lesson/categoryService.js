@@ -1,5 +1,5 @@
 
-import Category from "../models/category.js";
+import Category from "../../models/lesson/category.js";
 
 const createCategory = async (data) => {
     const existing = await Category.findOne({ slug: data.slug });

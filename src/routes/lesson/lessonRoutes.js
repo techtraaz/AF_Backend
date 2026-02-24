@@ -1,6 +1,6 @@
 
 import express from "express";
-import * as lessonController from "../controller/lessonController.js";
+import * as lessonController from "../../controller/lesson/lessonController.js";
 import readingRoutes from "./readingRoutes.js";
 import listeningRoutes from "./listeningRoutes.js";
 import vocabularyRoutes from "./vocabularyRoutes.js";

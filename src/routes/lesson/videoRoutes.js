@@ -1,6 +1,6 @@
 
 import express from "express";
-import * as videoController from "../controller/videoController.js";
+import * as videoController from "../../controller/lesson/videoController.js";
 
 const router = express.Router({ mergeParams: true });
 

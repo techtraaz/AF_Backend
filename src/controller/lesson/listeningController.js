@@ -1,5 +1,5 @@
 
-import * as listeningService from "../service/listeningService.js"
+import * as listeningService from "../../service/lesson/listeningService.js"
 
 export const createListening = async (req, res) => {
     try {

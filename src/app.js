@@ -10,8 +10,8 @@ import {authenticate, authorizeAdmin} from "./middleware/authMiddleware.js";
 import profileRoutes from "./routes/profileRoutes.js";
 import {swaggerSpec} from "./docs/swagger.js";
 import swaggerUi from "swagger-ui-express";
-import categoryRoutes from "./routes/categoryRoutes.js";
-import lessonRoutes from "./routes/lessonRoutes.js";
+import categoryRoutes from "./routes/lesson/categoryRoutes.js";
+import lessonRoutes from "./routes/lesson/lessonRoutes.js";
 
 const app = express();
 

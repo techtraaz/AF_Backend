@@ -1,5 +1,5 @@
 
-import * as videoService from "../service/videoService.js";
+import * as videoService from "../../service/lesson/videoService.js";
 
 export const createVideo = async (req, res) => {
     try {

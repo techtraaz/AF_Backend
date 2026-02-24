@@ -1,6 +1,6 @@
 
 import express from "express";
-import * as listeningController from "../controller/listeningController.js";
+import * as listeningController from "../../controller/lesson/listeningController.js";
 
 const router = express.Router({ mergeParams: true });
 
