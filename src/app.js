@@ -12,6 +12,8 @@ import swaggerUi from "swagger-ui-express";
 import categoryRoutes from "./routes/categoryRoutes.js";
 import lessonRoutes from "./routes/lessonRoutes.js";
 
+import contentRoutes from "./routes/contentRoutes.js";
+
 const app = express();
 
 app.use(cors());
@@ -27,6 +29,8 @@ app.use("/api/course", courseRoutes);
 
 app.use("/api/categories", categoryRoutes);
 app.use("/api/lessons", lessonRoutes);
+
+app.use("/api/digital-library", contentRoutes);
 
 app.get("/", (req, res) => {
   res.success("Server Up and Running", { status: "ok" });
