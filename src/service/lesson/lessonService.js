@@ -1,8 +1,8 @@
-import Lesson from "../models/lesson.js";
-import Reading from "../models/reading.js";
-import Listening from "../models/listening.js";
-import Vocabulary from "../models/vocab.js";
-import Video from "../models/video.js";
+import Lesson from "../../models/lesson/lesson.js";
+import Reading from "../../models/lesson/reading.js";
+import Listening from "../../models/lesson/listening.js";
+import Vocabulary from "../../models/lesson/vocab.js";
+import Video from "../../models/lesson/video.js";
 
 const createLesson = async (data) => {
   const lesson = await Lesson.create({

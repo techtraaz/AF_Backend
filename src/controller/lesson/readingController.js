@@ -1,5 +1,5 @@
 
-import * as readingService from "../service/readingService.js";
+import * as readingService from "../../service/lesson/readingService.js";
 
 const createReading = async (req, res) => {
     try {

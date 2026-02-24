@@ -1,6 +1,6 @@
 
 import express from "express";
-import * as vocabularyController from "../controller/vocabularyController.js";
+import * as vocabularyController from "../../controller/lesson/vocabularyController.js";
 
 const router = express.Router({ mergeParams: true });
 
