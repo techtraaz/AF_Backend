@@ -7,6 +7,7 @@ import authRoutes from "./routes/authRoutes.js";
 import quizRoutes from "./routes/quiz/quizIndex.js";
 import courseRoutes from "./routes/course/courseRoutes.js";
 import {authenticate, authorizeAdmin} from "./middleware/authMiddleware.js";
+import profileRoutes from "./routes/profileRoutes.js";
 import {swaggerSpec} from "./docs/swagger.js";
 import swaggerUi from "swagger-ui-express";
 import categoryRoutes from "./routes/categoryRoutes.js";
@@ -22,6 +23,7 @@ app.use(responseGenerator);
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 app.use("/api/auth", authRoutes);
+app.use("/api/profile", profileRoutes);
 app.use("/api/quiz", quizRoutes);
 app.use("/api/course", courseRoutes);
 
