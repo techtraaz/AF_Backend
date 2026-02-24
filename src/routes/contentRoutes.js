@@ -22,4 +22,17 @@ router.get(
   contentController.getAllContent
 );
 
+
+// PUT /api/digital-library/:id
+router.put(
+  '/:id',
+  contentController.updateContent
+);
+
+// DELETE /api/digital-library/:id
+router.delete(
+  '/:id',
+  contentController.deleteContent
+);
+
 export default router;

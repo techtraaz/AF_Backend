@@ -24,3 +24,34 @@ export const createContent = async (contentData) => {
 export const getAllContent = async (filter = {}) => {
   return await DigitalContent.find(filter).sort({ createdAt: -1 });
 };
+
+/**
+ * Find a DigitalContent entry by ID.
+ * @param {string} id - The MongoDB document ID.
+ * @returns {Promise<Object>} The DigitalContent document.
+ */
+export const getContentById = async (id) => {
+  return await DigitalContent.findById(id);
+};
+
+/**
+ * Update an existing DigitalContent entry by ID.
+ * @param {string} id - The MongoDB document ID.
+ * @param {Object} updateData - Data to update.
+ * @returns {Promise<Object>} The updated DigitalContent document.
+ */
+export const updateContentById = async (id, updateData) => {
+  return await DigitalContent.findByIdAndUpdate(id, updateData, { 
+    new: true, // Returns the updated document
+    runValidators: true // Ensures model validations are checked
+  });
+};
+
+/**
+ * Delete a DigitalContent entry by ID.
+ * @param {string} id - The MongoDB document ID.
+ * @returns {Promise<Object>} The deleted DigitalContent document.
+ */
+export const deleteContentById = async (id) => {
+  return await DigitalContent.findByIdAndDelete(id);
+};
