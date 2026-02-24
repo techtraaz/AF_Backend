@@ -1,6 +1,6 @@
 
 import express from "express";
-import * as readingController from "../controller/readingController.js";
+import * as readingController from "../../controller/lesson/readingController.js";
 
 const router = express.Router({ mergeParams: true }); // mergeParams to access lessonId
 

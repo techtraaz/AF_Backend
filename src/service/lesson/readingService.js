@@ -1,6 +1,6 @@
 
-import Lesson from "../models/lesson.js";
-import Reading from "../models/reading.js";
+import Lesson from "../../models/lesson/lesson.js";
+import Reading from "../../models/lesson/reading.js";
 
 const createReading = async (lessonId, data) => {
     const lesson = await Lesson.findById(lessonId);

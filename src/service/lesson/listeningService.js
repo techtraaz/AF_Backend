@@ -1,6 +1,6 @@
 
-import Lesson from "../models/lesson.js";
-import Listening from "../models/listening.js";
+import Lesson from "../../models/lesson/lesson.js";
+import Listening from "../../models/lesson/listening.js";
 
 const createListening = async (lessonId, data) => {
     const lesson = await Lesson.findById(lessonId);

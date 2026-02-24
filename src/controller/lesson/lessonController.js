@@ -1,5 +1,5 @@
 
-import * as lessonService from "../service/lessonService.js";
+import * as lessonService from "../../service/lesson/lessonService.js";
 
 const createLesson = async (req, res) => {
     try {

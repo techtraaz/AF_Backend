@@ -1,5 +1,5 @@
 
-import * as vocabularyService from "../service/vocabularyService.js";
+import * as vocabularyService from "../../service/lesson/vocabularyService.js";
 
 export const createVocabulary = async (req, res) => {
     try {

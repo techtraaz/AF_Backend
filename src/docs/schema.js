@@ -408,4 +408,565 @@
  *           type: number
  *         thumbnail:
  *           type: string
+ * 
+ *   # ============ QUIZ SCHEMAS ============
+ *
+ *     Quiz:
+ *       type: object
+ *       properties:
+ *         _id:
+ *           type: string
+ *           example: 64f1c2e4a12b3456789abcde
+ *         title:
+ *           type: string
+ *           example: English Grammar Basics Quiz
+ *         description:
+ *           type: string
+ *           example: Test your knowledge of basic English grammar
+ *         courseId:
+ *           type: string
+ *           example: 64f1c2e4a12b3456789abcdf
+ *         lessonId:
+ *           type: string
+ *           example: null
+ *         passingScore:
+ *           type: number
+ *           example: 70
+ *         timeLimitMinutes:
+ *           type: number
+ *           example: 30
+ *         maxAttempts:
+ *           type: number
+ *           example: 3
+ *         isPublished:
+ *           type: boolean
+ *           example: true
+ *         createdAt:
+ *           type: string
+ *           example: 2026-02-22T10:00:00.000Z
+ *         updatedAt:
+ *           type: string
+ *           example: 2026-02-22T10:00:00.000Z
+ *
+ *     CreateQuizRequest:
+ *       type: object
+ *       required:
+ *         - title
+ *         - description
+ *         - passingScore
+ *       properties:
+ *         title:
+ *           type: string
+ *           example: English Grammar Basics Quiz
+ *         description:
+ *           type: string
+ *           example: Test your knowledge of basic English grammar rules
+ *         courseId:
+ *           type: string
+ *           example: 64f1c2e4a12b3456789abcde
+ *         lessonId:
+ *           type: string
+ *           example: null
+ *         passingScore:
+ *           type: number
+ *           example: 70
+ *         timeLimitMinutes:
+ *           type: number
+ *           example: 30
+ *         maxAttempts:
+ *           type: number
+ *           example: 3
+ *
+ *     UpdateQuizRequest:
+ *       type: object
+ *       properties:
+ *         title:
+ *           type: string
+ *           example: English Grammar Basics - Updated
+ *         description:
+ *           type: string
+ *           example: Updated description
+ *         passingScore:
+ *           type: number
+ *           example: 75
+ *         timeLimitMinutes:
+ *           type: number
+ *           example: 45
+ *         maxAttempts:
+ *           type: number
+ *           example: 2
+ *
+ *     QuizResponse:
+ *       type: object
+ *       properties:
+ *         code:
+ *           type: number
+ *           example: 201
+ *         message:
+ *           type: string
+ *           example: Quiz created successfully
+ *         content:
+ *           $ref: '#/components/schemas/Quiz'
+ *
+ *     Question:
+ *       type: object
+ *       properties:
+ *         _id:
+ *           type: string
+ *           example: 64f1c2e4a12b3456789abcde
+ *         quizId:
+ *           type: string
+ *           example: 64f1c2e4a12b3456789abcdf
+ *         questionText:
+ *           type: string
+ *           example: What is the correct form of 'to be' for 'I'?
+ *         type:
+ *           type: string
+ *           enum: [multiple_choice, true_false, multiple_select, fill_blank]
+ *           example: multiple_choice
+ *         explanation:
+ *           type: string
+ *           example: The verb 'to be' conjugates to 'am' with 'I'
+ *         points:
+ *           type: number
+ *           example: 5
+ *         order:
+ *           type: number
+ *           example: 1
+ *         createdAt:
+ *           type: string
+ *           example: 2026-02-22T10:00:00.000Z
+ *         updatedAt:
+ *           type: string
+ *           example: 2026-02-22T10:00:00.000Z
+ *
+ *     CreateQuestionRequest:
+ *       type: object
+ *       required:
+ *         - quizId
+ *         - questionText
+ *         - type
+ *         - points
+ *       properties:
+ *         quizId:
+ *           type: string
+ *           example: 64f1c2e4a12b3456789abcde
+ *         questionText:
+ *           type: string
+ *           example: What is the correct form of 'to be' for 'I'?
+ *         type:
+ *           type: string
+ *           enum: [multiple_choice, true_false, multiple_select, fill_blank]
+ *           example: multiple_choice
+ *         explanation:
+ *           type: string
+ *           example: The verb 'to be' conjugates to 'am' with 'I'
+ *         points:
+ *           type: number
+ *           example: 5
+ *         order:
+ *           type: number
+ *           example: 1
+ *         options:
+ *           type: array
+ *           items:
+ *             $ref: '#/components/schemas/CreateOptionInline'
+ *
+ *     UpdateQuestionRequest:
+ *       type: object
+ *       properties:
+ *         questionText:
+ *           type: string
+ *           example: What is the correct present tense form of 'to be' for 'I'?
+ *         explanation:
+ *           type: string
+ *           example: Updated explanation
+ *         points:
+ *           type: number
+ *           example: 10
+ *
+ *     QuestionResponse:
+ *       type: object
+ *       properties:
+ *         code:
+ *           type: number
+ *           example: 201
+ *         message:
+ *           type: string
+ *           example: Question created successfully
+ *         content:
+ *           type: object
+ *           properties:
+ *             question:
+ *               $ref: '#/components/schemas/Question'
+ *             options:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Option'
+ *
+ *     QuestionWithOptionsResponse:
+ *       type: object
+ *       properties:
+ *         code:
+ *           type: number
+ *           example: 200
+ *         message:
+ *           type: string
+ *           example: Question retrieved successfully
+ *         content:
+ *           type: object
+ *           properties:
+ *             question:
+ *               $ref: '#/components/schemas/Question'
+ *             options:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Option'
+ *
+ *     ReorderQuestionsRequest:
+ *       type: object
+ *       required:
+ *         - questionOrders
+ *       properties:
+ *         questionOrders:
+ *           type: array
+ *           items:
+ *             type: object
+ *             properties:
+ *               questionId:
+ *                 type: string
+ *                 example: 64f1c2e4a12b3456789abcde
+ *               order:
+ *                 type: number
+ *                 example: 1
+ *
+ *     Option:
+ *       type: object
+ *       properties:
+ *         _id:
+ *           type: string
+ *           example: 64f1c2e4a12b3456789abcde
+ *         questionId:
+ *           type: string
+ *           example: 64f1c2e4a12b3456789abcdf
+ *         optionText:
+ *           type: string
+ *           example: am
+ *         isCorrect:
+ *           type: boolean
+ *           example: true
+ *         createdAt:
+ *           type: string
+ *           example: 2026-02-22T10:00:00.000Z
+ *         updatedAt:
+ *           type: string
+ *           example: 2026-02-22T10:00:00.000Z
+ *
+ *     CreateOptionInline:
+ *       type: object
+ *       required:
+ *         - optionText
+ *         - isCorrect
+ *       properties:
+ *         optionText:
+ *           type: string
+ *           example: am
+ *         isCorrect:
+ *           type: boolean
+ *           example: true
+ *
+ *     CreateOptionRequest:
+ *       type: object
+ *       required:
+ *         - questionId
+ *         - optionText
+ *         - isCorrect
+ *       properties:
+ *         questionId:
+ *           type: string
+ *           example: 64f1c2e4a12b3456789abcde
+ *         optionText:
+ *           type: string
+ *           example: am
+ *         isCorrect:
+ *           type: boolean
+ *           example: true
+ *
+ *     UpdateOptionRequest:
+ *       type: object
+ *       properties:
+ *         optionText:
+ *           type: string
+ *           example: were
+ *         isCorrect:
+ *           type: boolean
+ *           example: false
+ *
+ *     QuizAttempt:
+ *       type: object
+ *       properties:
+ *         _id:
+ *           type: string
+ *           example: 64f1c2e4a12b3456789abcde
+ *         refugeeId:
+ *           type: string
+ *           example: 64f1c2e4a12b3456789abcdf
+ *         quizId:
+ *           type: string
+ *           example: 64f1c2e4a12b3456789abce0
+ *         score:
+ *           type: number
+ *           example: 85
+ *         totalQuestions:
+ *           type: number
+ *           example: 10
+ *         correctAnswers:
+ *           type: number
+ *           example: 8
+ *         passed:
+ *           type: boolean
+ *           example: true
+ *         timeTakenSeconds:
+ *           type: number
+ *           example: 1200
+ *         attemptedAt:
+ *           type: string
+ *           example: 2026-02-22T10:00:00.000Z
+ *
+ *     SubmitQuizAttemptRequest:
+ *       type: object
+ *       required:
+ *         - refugeeId
+ *         - quizId
+ *         - responses
+ *       properties:
+ *         refugeeId:
+ *           type: string
+ *           example: 64f1c2e4a12b3456789abcde
+ *         quizId:
+ *           type: string
+ *           example: 64f1c2e4a12b3456789abcdf
+ *         timeTakenSeconds:
+ *           type: number
+ *           example: 1200
+ *         responses:
+ *           type: array
+ *           items:
+ *             oneOf:
+ *               - $ref: '#/components/schemas/SingleChoiceResponse'
+ *               - $ref: '#/components/schemas/MultipleChoiceResponse'
+ *
+ *     SingleChoiceResponse:
+ *       type: object
+ *       properties:
+ *         questionId:
+ *           type: string
+ *           example: 64f1c2e4a12b3456789abce0
+ *         selectedOptionId:
+ *           type: string
+ *           example: 64f1c2e4a12b3456789abce1
+ *
+ *     MultipleChoiceResponse:
+ *       type: object
+ *       properties:
+ *         questionId:
+ *           type: string
+ *           example: 64f1c2e4a12b3456789abce0
+ *         selectedOptionIds:
+ *           type: array
+ *           items:
+ *             type: string
+ *           example: [64f1c2e4a12b3456789abce1, 64f1c2e4a12b3456789abce2]
+ *
+ *     QuizAttemptResponse:
+ *       type: object
+ *       properties:
+ *         code:
+ *           type: number
+ *           example: 201
+ *         message:
+ *           type: string
+ *           example: Quiz attempt submitted successfully
+ *         content:
+ *           $ref: '#/components/schemas/QuizAttempt'
+ *
+ *
+ *     AttemptWithResponsesResponse:
+ *       type: object
+ *       properties:
+ *         code:
+ *           type: number
+ *           example: 200
+ *         message:
+ *           type: string
+ *           example: Attempt retrieved successfully
+ *         content:
+ *           type: object
+ *           properties:
+ *             attempt:
+ *               $ref: '#/components/schemas/QuizAttempt'
+ *             responses:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/QuizResponse'
+ *
+ *     QuizStatistics:
+ *       type: object
+ *       properties:
+ *         totalAttempts:
+ *           type: number
+ *           example: 25
+ *         averageScore:
+ *           type: number
+ *           example: 78
+ *         passRate:
+ *           type: number
+ *           example: 80
+ *         highestScore:
+ *           type: number
+ *           example: 100
+ *         lowestScore:
+ *           type: number
+ *           example: 45
+ *
+ *     QuizStatisticsResponse:
+ *       type: object
+ *       properties:
+ *         code:
+ *           type: number
+ *           example: 200
+ *         message:
+ *           type: string
+ *           example: Quiz statistics retrieved successfully
+ *         content:
+ *           $ref: '#/components/schemas/QuizStatistics'
+ *
+ *     # ============ COURSE SCHEMAS ============
+ *
+ *     Course:
+ *       type: object
+ *       properties:
+ *         _id:
+ *           type: string
+ *           example: 64f1c2e4a12b3456789abcde
+ *         title:
+ *           type: string
+ *           example: English for Beginners
+ *         description:
+ *           type: string
+ *           example: A comprehensive course for absolute beginners
+ *         language:
+ *           type: string
+ *           example: English
+ *         level:
+ *           type: string
+ *           enum: [Beginner, Intermediate, Advanced]
+ *           example: Beginner
+ *         createdById:
+ *           type: string
+ *           example: 64f1c2e4a12b3456789abcdf
+ *         categoryId:
+ *           type: string
+ *           example: 64f1c2e4a12b3456789abce0
+ *         isPublished:
+ *           type: boolean
+ *           example: true
+ *         totalLessons:
+ *           type: number
+ *           example: 12
+ *         totalEnrollments:
+ *           type: number
+ *           example: 150
+ *         createdAt:
+ *           type: string
+ *           example: 2026-02-22T10:00:00.000Z
+ *         updatedAt:
+ *           type: string
+ *           example: 2026-02-22T10:00:00.000Z
+ *
+ *     CreateCourseRequest:
+ *       type: object
+ *       required:
+ *         - title
+ *         - description
+ *         - level
+ *         - createdById
+ *         - categoryId
+ *       properties:
+ *         title:
+ *           type: string
+ *           example: English for Beginners
+ *         description:
+ *           type: string
+ *           example: A comprehensive course designed for absolute beginners to learn English
+ *         language:
+ *           type: string
+ *           example: English
+ *         level:
+ *           type: string
+ *           enum: [Beginner, Intermediate, Advanced]
+ *           example: Beginner
+ *         createdById:
+ *           type: string
+ *           example: 64f1c2e4a12b3456789abcde
+ *         categoryId:
+ *           type: string
+ *           example: 64f1c2e4a12b3456789abcdf
+ *
+ *     UpdateCourseRequest:
+ *       type: object
+ *       properties:
+ *         title:
+ *           type: string
+ *           example: English for Beginners - Updated Edition
+ *         description:
+ *           type: string
+ *           example: Updated comprehensive course with new multimedia content
+ *         level:
+ *           type: string
+ *           enum: [Beginner, Intermediate, Advanced]
+ *           example: Intermediate
+ *
+ *     CourseResponse:
+ *       type: object
+ *       properties:
+ *         code:
+ *           type: number
+ *           example: 201
+ *         message:
+ *           type: string
+ *           example: Course created successfully
+ *         content:
+ *           $ref: '#/components/schemas/Course'
+ *
+ *     CourseStatistics:
+ *       type: object
+ *       properties:
+ *         totalLessons:
+ *           type: number
+ *           example: 12
+ *         totalEnrollments:
+ *           type: number
+ *           example: 150
+ *         isPublished:
+ *           type: boolean
+ *           example: true
+ *         level:
+ *           type: string
+ *           example: Beginner
+ *         language:
+ *           type: string
+ *           example: English
+ *
+ *     CourseStatisticsResponse:
+ *       type: object
+ *       properties:
+ *         code:
+ *           type: number
+ *           example: 200
+ *         message:
+ *           type: string
+ *           example: Course statistics retrieved successfully
+ *         content:
+ *           $ref: '#/components/schemas/CourseStatistics'
  */

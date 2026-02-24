@@ -1,6 +1,6 @@
 
-import Lesson from "../models/lesson.js";
-import Video from "../models/video.js";
+import Lesson from "../../models/lesson/lesson.js";
+import Video from "../../models/lesson/video.js";
 
 const createVideo = async (lessonId, data) => {
     const lesson = await Lesson.findById(lessonId);
