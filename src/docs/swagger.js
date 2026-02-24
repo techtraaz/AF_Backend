@@ -24,7 +24,12 @@ const options = {
             }
         }
     },
-    apis: ["./src/docs/*.js"],
+    apis: [
+        "./src/docs/*.js",
+        "./src/routes/lesson/categoryRoutes.js",
+        "./src/routes/quiz/listeningRoutes.js",
+        "./src/routes/course/questionRoutes.js",
+    ],
 };
 
 const swaggerSpec = swaggerJsdoc(options);
