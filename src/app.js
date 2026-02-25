@@ -18,7 +18,7 @@ import postRoutes from "./routes/forum/postRoutes.js";
 import answerRoutes from "./routes/forum/answerRoutes.js";
 import voteRoutes from "./routes/forum/voteRoutes.js";
 
-import contentRoutes from "./routes/contentRoutes.js";
+import contentRoutes from "./routes/content/contentRoutes.js";
 
 const app = express();
 

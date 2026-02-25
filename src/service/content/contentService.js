@@ -3,7 +3,7 @@
  * Handles database operations for digital content.
  */
 
-import { DigitalContent } from '../models/contentModel.js';
+import { DigitalContent } from '../../models/content/contentModel.js';
 
 /**
  * Create and save a new DigitalContent entry.

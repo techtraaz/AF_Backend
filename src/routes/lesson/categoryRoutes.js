@@ -11,3 +11,9 @@ router.put("/:id", categoryController.updateCategory);
 router.delete("/:id", categoryController.deleteCategory);
 
 export default router;
+
+
+
+
+
+

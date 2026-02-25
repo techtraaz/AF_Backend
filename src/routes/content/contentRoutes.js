@@ -1,18 +1,20 @@
 /**
  * @fileoverview Express routes for DigitalContent (Digital Library) module.
- * Connects middleware and controllers for upload and retrieval.
+ * Connects middleware and controllers for upload, retrieval, update, and deletion.
  */
 
 import express from 'express';
-import { digitalContentUploadMiddleware } from '../middleware/uploadMiddleware.js';
-import * as contentController from '../controller/contentController.js';
+import { digitalContentUploadMiddleware } from '../../middleware/content/uploadMiddleware.js';
+import { validateDigitalContent } from '../../middleware/content/contentValidationMiddleware.js';
+import * as contentController from '../../controller/content/contentController.js';
 
 const router = express.Router();
 
 // POST /api/digital-library/upload
 router.post(
   '/upload',
-  digitalContentUploadMiddleware,
+  digitalContentUploadMiddleware, 
+  validateDigitalContent,         
   contentController.createContent
 );
 
@@ -22,10 +24,11 @@ router.get(
   contentController.getAllContent
 );
 
-
 // PUT /api/digital-library/:id
 router.put(
   '/:id',
+  digitalContentUploadMiddleware,
+  validateDigitalContent,         
   contentController.updateContent
 );
 
