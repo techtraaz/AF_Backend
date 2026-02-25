@@ -22,13 +22,22 @@ const signup = async (data, role = ROLES.USER) => {
 
     const hashedPassword = await bcrypt.hash(data.password, 10);
 
+    const status =
+        role === ROLES.CONTENT_CONTRIBUTOR
+            ? ACCOUNT_STATUSES.PENDING
+            : ACCOUNT_STATUSES.ACTIVE;
+
     const user = await User.create({
         email: data.email,
         password: hashedPassword,
-        role
+        role,
+        status
     });
 
-    return user;
+    const userObj = user.toObject();
+    delete userObj.password;
+
+    return userObj;
 };
 
 const login = async (data) => {
@@ -39,6 +48,14 @@ const login = async (data) => {
 
     if (!user.isActive) {
         throw new Error("Account is deactivated");
+    }
+
+     if (user.status === ACCOUNT_STATUS.PENDING) {
+        throw new Error("Your account is pending admin approval");
+    }
+
+    if (user.status === ACCOUNT_STATUS.REJECTED) {
+        throw new Error("Your account has been rejected");
     }
 
     const isMatch = await bcrypt.compare(data.password, user.password);

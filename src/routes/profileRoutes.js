@@ -9,30 +9,35 @@ router.post(
     "/create-refugee", 
     authenticate, 
     authorizeRefugee, 
-    createProfile);
+    createProfile
+);
 
 router.post(
     "/create-contributor", 
     authenticate, 
-    authorizeAdmin, 
-    createProfile);
+    authorizeAdmin,
+    createProfile
+);
 
 router.post(
     "/create-admin", 
     authenticate, 
     authorizeAdmin, 
-    createProfile);
+    createProfile
+);
 
 router.patch(
     "/update", 
     authenticate, 
     authorizeRoles(), 
-    updateProfile);
+    updateProfile
+);
 
 router.get(
     "/get", 
     authenticate,
     authorizeRoles(), 
-    getProfile);
+    getProfile
+);
 
 export default router;
