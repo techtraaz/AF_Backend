@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import { ROLES } from "../utils/constants.js";
+import { ACCOUNT_STATUSES, ROLES } from "../utils/constants.js";
 
 const userSchema = new mongoose.Schema(
     {
@@ -16,6 +16,11 @@ const userSchema = new mongoose.Schema(
             type: String,
             enum: [ROLES.ADMIN, ROLES.USER],
             default: ROLES.USER
+        },
+        status: {
+            type: String,
+            enum: Object.values(ACCOUNT_STATUSES),
+            default: ACCOUNT_STATUSES.ACTIVE
         },
         isActive: {
             type: Boolean,

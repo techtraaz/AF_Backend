@@ -1,10 +1,22 @@
 import * as authService from "../service/authService.js";
 import { ROLES } from "../utils/constants.js";
 
-const signupUser = async (req, res) => {
+const signupRefugee = async (req, res) => {
     try {
-        const user = await authService.signup(req.body, ROLES.USER);
-        return res.created("User registered successfully", user);
+        const user = await authService.signup(req.body, ROLES.REFUGEE);
+        return res.created("Refugee registered successfully", user);
+    } catch (error) {
+        return res.badRequest(error.message);
+    }
+};
+
+const signupContributor = async (req, res) => {
+    try {
+        const user = await authService.signup(req.body, ROLES.CONTENT_CONTRIBUTOR);
+        return res.created(
+            "Registration submitted. Please wait for admin approval before logging in.",
+            user
+        );
     } catch (error) {
         return res.badRequest(error.message);
     }
@@ -29,4 +41,4 @@ const login = async (req, res) => {
 };
 
 
-export {signupUser, signupAdmin , login }
+export {signupRefugee, signupContributor, signupAdmin, login }
