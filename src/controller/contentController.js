@@ -87,9 +87,8 @@ export const getAllContent = async (req, res, next) => {
   }
 };
 
-
 /**
- * Update DigitalContent entry (Title, Description, Category, etc.)
+ * Update DigitalContent entry (Title, Description, Category, ContentType, and File)
  * @param {import('express').Request} req 
  * @param {import('express').Response} res 
  * @param {Function} next 
@@ -97,8 +96,37 @@ export const getAllContent = async (req, res, next) => {
 export const updateContent = async (req, res, next) => {
   try {
     const { id } = req.params;
-    const updateData = req.body;
+    const updateData = { ...req.body }; // title, description, category, contentType 
 
+    
+    if (req.file) {
+     
+      const existingContent = await contentService.getContentById(id);
+      
+      if (!existingContent) {
+        return res.status(404).json({
+          success: false,
+          message: 'Content not found.',
+        });
+      }
+
+     
+      if (existingContent.cloudinaryId) {
+        let resourceType = 'image';
+        if (existingContent.contentType === 'video' || existingContent.contentType === 'audio') {
+          resourceType = 'video';
+        } else if (existingContent.contentType === 'document') {
+          resourceType = 'raw';
+        }
+        await cloudinary.uploader.destroy(existingContent.cloudinaryId, { resource_type: resourceType });
+      }
+
+     
+      updateData.fileUrl = req.file.path || req.file.secure_url;
+      updateData.cloudinaryId = req.file.filename || req.file.public_id;
+    }
+
+    // 2. Database Update 
     const updatedContent = await contentService.updateContentById(id, updateData);
 
     if (!updatedContent) {
@@ -117,6 +145,8 @@ export const updateContent = async (req, res, next) => {
     next(error);
   }
 };
+
+
 
 /**
  * Delete a DigitalContent entry from Database AND Cloudinary.

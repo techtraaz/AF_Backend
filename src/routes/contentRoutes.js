@@ -23,9 +23,11 @@ router.get(
 );
 
 
+
 // PUT /api/digital-library/:id
 router.put(
   '/:id',
+  digitalContentUploadMiddleware, 
   contentController.updateContent
 );
 
