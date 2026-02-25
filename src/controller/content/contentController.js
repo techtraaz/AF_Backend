@@ -3,7 +3,7 @@
  * Handles creation, retrieval, updating, and deletion of digital library resources.
  */
 
-import * as contentService from '../service/contentService.js';
+import * as contentService from '../../service/content/contentService.js';
 import { v2 as cloudinary } from 'cloudinary';
 
 /**

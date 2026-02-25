@@ -4,9 +4,9 @@
  */
 
 import express from 'express';
-import { digitalContentUploadMiddleware } from '../middleware/uploadMiddleware.js';
-import { validateDigitalContent } from '../middleware/content/contentValidationMiddleware.js';
-import * as contentController from '../controller/contentController.js';
+import { digitalContentUploadMiddleware } from '../../middleware/content/uploadMiddleware.js';
+import { validateDigitalContent } from '../../middleware/content/contentValidationMiddleware.js';
+import * as contentController from '../../controller/content/contentController.js';
 
 const router = express.Router();
 
