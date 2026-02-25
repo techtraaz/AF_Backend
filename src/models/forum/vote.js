@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import { VOTE_TARGET_TYPES, VOTE_TYPES } from "../../constants/voteConstants.js";
+import { VOTE_TARGET_TYPES, VOTE_TYPES } from "../../utils/constants.js";
 
 const voteSchema = new mongoose.Schema(
     {
