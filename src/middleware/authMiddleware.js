@@ -31,5 +31,26 @@ const authorizeAdmin = (req, res, next) => {
     next();
 };
 
+const authorizeRefugee = (req, res, next) => {
+    if (req.user.role !== ROLES.REFUGEE) {
+        return res.forbidden("Refugee access required");
+    }
+    next();
+};
 
-export {authenticate , authorizeAdmin}
+const authorizeContentContributor = (req, res, next) => {
+    if (req.user.role !== ROLES.CONTENT_CONTRIBUTOR) {
+        return res.forbidden("Content Contributor access required");
+    }
+    next();
+};
+
+const authorizeRoles = (...roles) => (req, res, next) => {
+    const allowedRoles = roles.length > 0 ? roles : Object.values(ROLES);
+    if (!allowedRoles.includes(req.user.role)) {
+        return res.forbidden("Access denied");
+    }
+    next();
+};
+
+export {authenticate , authorizeAdmin, authorizeRoles, authorizeRefugee, authorizeContentContributor};
