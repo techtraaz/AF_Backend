@@ -1,4 +1,4 @@
-import * as adminService from "../service/adminService.js";
+import * as adminService from "../service/adminApprovalService.js";
 
 const getPendingContributors = async (req, res) => {
     try {
