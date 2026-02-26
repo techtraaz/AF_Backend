@@ -1,6 +1,7 @@
 import jwt from "jsonwebtoken";
-import User from "../models/user.js";
-import { ROLES } from "../utils/constants.js";
+import User from "../models/auth/user.js";
+import { ACCOUNT_STATUSES, ROLES } from "../utils/constants.js";
+import BlacklistedToken from "../models/auth/blacklistedToken.js";
 
 const authenticate = async (req, res, next) => {
     const authHeader = req.headers.authorization;
@@ -12,8 +13,13 @@ const authenticate = async (req, res, next) => {
     try {
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
+        const isBlacklisted = await BlacklistedToken.findOne({ token });
+        if (isBlacklisted) {
+            return res.unauthorized("Token has been invalidated. Please login again");
+        }
+
         const user = await User.findById(decoded.id);
-        if (!user || !user.isActive) {
+        if (!user || user.status !== ACCOUNT_STATUSES.ACTIVE) {
             return res.unauthorized("Invalid or inactive user");
         }
 

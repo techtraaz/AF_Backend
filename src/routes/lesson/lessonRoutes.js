@@ -5,15 +5,15 @@ import readingRoutes from "./readingRoutes.js";
 import listeningRoutes from "./listeningRoutes.js";
 import vocabularyRoutes from "./vocabularyRoutes.js";
 import videoRoutes from "./videoRoutes.js";
-
+import { authenticate,authorizeContentContributor} from "../../middleware/authMiddleware.js";
 const router = express.Router();
 
-router.post("/", lessonController.createLesson);
+router.post("/", authenticate,authorizeContentContributor,lessonController.createLesson);
 router.get("/", lessonController.getAllLessons);
 router.get("/:id", lessonController.getLessonById);
-router.put("/:id", lessonController.updateLesson);
-router.delete("/:id", lessonController.deleteLesson);
-router.patch("/:id/publish", lessonController.publishLesson);
+router.put("/:id",authenticate,authorizeContentContributor, lessonController.updateLesson);
+router.delete("/:id",authenticate,authorizeContentContributor, lessonController.deleteLesson);
+router.patch("/:id/publish", authenticate,authorizeContentContributor,lessonController.publishLesson);
 
 
 router.use("/:lessonId/reading", readingRoutes);
