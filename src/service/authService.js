@@ -1,7 +1,8 @@
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import User from "../models/user.js";
-import { ROLES } from "../utils/constants.js";
+import User from "../models/auth/user.js";
+import BlacklistedToken from "../models/auth/blacklistedToken.js";
+import { ROLES, ACCOUNT_STATUSES } from "../utils/constants.js";
 
 const generateToken = (user) => {
     return jwt.sign(
@@ -46,15 +47,11 @@ const login = async (data) => {
         throw new Error("Invalid credentials");
     }
 
-    if (!user.isActive) {
-        throw new Error("Account is deactivated");
-    }
-
-     if (user.status === ACCOUNT_STATUS.PENDING) {
+    if (user.status === ACCOUNT_STATUSES.PENDING) {
         throw new Error("Your account is pending admin approval");
     }
 
-    if (user.status === ACCOUNT_STATUS.REJECTED) {
+    if (user.status === ACCOUNT_STATUSES.REJECTED) {
         throw new Error("Your account has been rejected");
     }
 
@@ -71,5 +68,15 @@ const login = async (data) => {
     return { user : userObj, token };
 };
 
+const logout = async (token) => {
+    const decoded = jwt.decode(token);
+    if (!decoded || !decoded.exp) {
+        throw new Error("Invalid token");
+    }
 
-export {signup , login}
+    const expiresAt = new Date(decoded.exp * 1000);
+
+    await BlacklistedToken.create({ token, expiresAt });
+};
+
+export {signup , login, logout};

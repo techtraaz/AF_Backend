@@ -40,5 +40,15 @@ const login = async (req, res) => {
     }
 };
 
+const logout = async (req, res) => {
+    try {
+        const token = req.headers.authorization.split(" ")[1];
+        await authService.logout(token);
+        return res.success("Logged out successfully");
+    } catch (error) {
+        return res.badRequest(error.message);
+    }
+};
 
-export {signupRefugee, signupContributor, signupAdmin, login }
+
+export {signupRefugee, signupContributor, signupAdmin, login, logout};
