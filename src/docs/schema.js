@@ -94,6 +94,185 @@
  *           type: string
  *           example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
  *
+ *  # ============ PROFILE SCHEMAS ============
+ *
+ *     RefugeeProfile:
+ *       type: object
+ *       properties:
+ *         _id:
+ *           type: string
+ *           example: 65f1a2b3c4d5e6f7a8b9c0d1
+ *         userId:
+ *           type: string
+ *           example: 65f1a2b3c4d5e6f7a8b9c0d2
+ *         fullName:
+ *           type: string
+ *           example: John Doe
+ *         dateOfBirth:
+ *           type: string
+ *           format: date
+ *           example: 1990-05-15
+ *         nationality:
+ *           type: string
+ *           example: Syrian
+ *         preferredLanguage:
+ *           type: string
+ *           example: Arabic
+ *         createdAt:
+ *           type: string
+ *           format: date-time
+ *           example: 2026-02-22T10:00:00.000Z
+ *         updatedAt:
+ *           type: string
+ *           format: date-time
+ *           example: 2026-02-22T10:00:00.000Z
+ *
+ *     CreateRefugeeProfileRequest:
+ *       type: object
+ *       required:
+ *         - fullName
+ *       properties:
+ *         fullName:
+ *           type: string
+ *           example: John Doe
+ *         dateOfBirth:
+ *           type: string
+ *           format: date
+ *           example: 1990-05-15
+ *         nationality:
+ *           type: string
+ *           example: Syrian
+ *         preferredLanguage:
+ *           type: string
+ *           example: Arabic
+ *
+ *     UpdateRefugeeProfileRequest:
+ *       type: object
+ *       properties:
+ *         fullName:
+ *           type: string
+ *           example: John Doe Updated
+ *         dateOfBirth:
+ *           type: string
+ *           format: date
+ *           example: 1990-05-15
+ *         nationality:
+ *           type: string
+ *           example: Syrian
+ *         preferredLanguage:
+ *           type: string
+ *           example: French
+ *
+ *     ContentContributorProfile:
+ *       type: object
+ *       properties:
+ *         _id:
+ *           type: string
+ *           example: 65f1a2b3c4d5e6f7a8b9c0d1
+ *         userId:
+ *           type: string
+ *           example: 65f1a2b3c4d5e6f7a8b9c0d2
+ *         fullName:
+ *           type: string
+ *           example: Jane Smith
+ *         bio:
+ *           type: string
+ *           example: Experienced language teacher with 10 years of teaching English.
+ *         expertise:
+ *           type: array
+ *           items:
+ *             type: string
+ *           example: [English, Grammar, Vocabulary]
+ *         createdAt:
+ *           type: string
+ *           format: date-time
+ *           example: 2026-02-22T10:00:00.000Z
+ *         updatedAt:
+ *           type: string
+ *           format: date-time
+ *           example: 2026-02-22T10:00:00.000Z
+ *
+ *     CreateContributorProfileRequest:
+ *       type: object
+ *       required:
+ *         - fullName
+ *       properties:
+ *         fullName:
+ *           type: string
+ *           example: Jane Smith
+ *         bio:
+ *           type: string
+ *           example: Experienced language teacher with 10 years of teaching English.
+ *         expertise:
+ *           type: array
+ *           items:
+ *             type: string
+ *           example: [English, Grammar, Vocabulary]
+ *
+ *     UpdateContributorProfileRequest:
+ *       type: object
+ *       properties:
+ *         fullName:
+ *           type: string
+ *           example: Jane Smith Updated
+ *         bio:
+ *           type: string
+ *           example: Updated bio with new experience details.
+ *         expertise:
+ *           type: array
+ *           items:
+ *             type: string
+ *           example: [English, Grammar, Pronunciation]
+ *
+ *     AdminProfile:
+ *       type: object
+ *       properties:
+ *         _id:
+ *           type: string
+ *           example: 65f1a2b3c4d5e6f7a8b9c0d1
+ *         userId:
+ *           type: string
+ *           example: 65f1a2b3c4d5e6f7a8b9c0d2
+ *         fullName:
+ *           type: string
+ *           example: Admin User
+ *         accessLevel:
+ *           type: string
+ *           enum: [STANDARD, SUPER]
+ *           example: STANDARD
+ *         createdAt:
+ *           type: string
+ *           format: date-time
+ *           example: 2026-02-22T10:00:00.000Z
+ *         updatedAt:
+ *           type: string
+ *           format: date-time
+ *           example: 2026-02-22T10:00:00.000Z
+ *
+ *     CreateAdminProfileRequest:
+ *       type: object
+ *       required:
+ *         - fullName
+ *       properties:
+ *         fullName:
+ *           type: string
+ *           example: Admin User
+ *         accessLevel:
+ *           type: string
+ *           enum: [STANDARD, SUPER]
+ *           example: STANDARD
+ *
+ *     UpdateAdminProfileRequest:
+ *       type: object
+ *       properties:
+ *         fullName:
+ *           type: string
+ *           example: Admin User Updated
+ *         accessLevel:
+ *           type: string
+ *           enum: [STANDARD, SUPER]
+ *           example: SUPER
+ * 
  *     Category:
  *       type: object
  *       properties:
