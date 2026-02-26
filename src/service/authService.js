@@ -1,7 +1,7 @@
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import User from "../models/user.js";
-import { ROLES } from "../utils/constants.js";
+import { ROLES, ACCOUNT_STATUSES } from "../utils/constants.js";
 
 const generateToken = (user) => {
     return jwt.sign(
@@ -46,15 +46,11 @@ const login = async (data) => {
         throw new Error("Invalid credentials");
     }
 
-    if (!user.isActive) {
-        throw new Error("Account is deactivated");
-    }
-
-     if (user.status === ACCOUNT_STATUS.PENDING) {
+    if (user.status === ACCOUNT_STATUSES.PENDING) {
         throw new Error("Your account is pending admin approval");
     }
 
-    if (user.status === ACCOUNT_STATUS.REJECTED) {
+    if (user.status === ACCOUNT_STATUSES.REJECTED) {
         throw new Error("Your account has been rejected");
     }
 

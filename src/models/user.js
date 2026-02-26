@@ -22,13 +22,16 @@ const userSchema = new mongoose.Schema(
             enum: Object.values(ACCOUNT_STATUSES),
             default: ACCOUNT_STATUSES.ACTIVE
         },
-        isActive: {
-            type: Boolean,
-            default: true
-        }
-        // add on boarding detail if needed
     },
-    { timestamps: true }
+    { 
+        timestamps: true,
+        toJSON: { virtuals: true },
+        toObject: { virtuals: true } 
+    }
 );
+
+userSchema.virtual("isActive").get(function () {
+    return this.status === ACCOUNT_STATUSES.ACTIVE;
+});
 
 export default mongoose.model("User", userSchema);
