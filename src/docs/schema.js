@@ -1,7 +1,29 @@
 /**
  * @swagger
  * components:
+ *   securitySchemes:
+ *     BearerAuth:
+ *       type: http
+ *       scheme: bearer
+ *       bearerFormat: JWT
+ * 
  *   schemas:
+ *  # ============ COMMON SCHEMAS ============
+ *
+ *     ApiResponse:
+ *       type: object
+ *       properties:
+ *         code:
+ *           type: integer
+ *           example: 200
+ *         message:
+ *           type: string
+ *           example: Success
+ *         content:
+ *           type: object
+ *           nullable: true
+ *
+ *  # ============ AUTH SCHEMAS ============
  *
  *     SignupRequest:
  *       type: object
@@ -11,10 +33,12 @@
  *       properties:
  *         email:
  *           type: string
+ *           format: email
  *           example: user@example.com
  *         password:
  *           type: string
- *           example: 123456
+ *           format: password
+ *           example: StrongPassword123
  *
  *     LoginRequest:
  *       type: object
@@ -24,22 +48,51 @@
  *       properties:
  *         email:
  *           type: string
+ *           format: email
  *           example: user@example.com
  *         password:
  *           type: string
- *           example: 123456
+ *           format: password
+ *           example: StrongPassword123
  *
- *     AuthResponse:
+ *     UserResponse:
  *       type: object
  *       properties:
- *         code:
- *           type: number
- *           example: 200
- *         message:
+ *         _id:
  *           type: string
- *           example: Login successful
- *         content:
- *           type: object
+ *           example: 65f1a2b3c4d5e6f7a8b9c0d1
+ *         email:
+ *           type: string
+ *           format: email
+ *           example: user@example.com
+ *         role:
+ *           type: string
+ *           enum: [REFUGEE, CONTENT_CONTRIBUTOR, ADMIN]
+ *           example: REFUGEE
+ *         status:
+ *           type: string
+ *           enum: [ACTIVE, PENDING, REJECTED]
+ *           example: ACTIVE
+ *         isActive:
+ *           type: boolean
+ *           example: true
+ *         createdAt:
+ *           type: string
+ *           format: date-time
+ *           example: 2026-02-22T10:00:00.000Z
+ *         updatedAt:
+ *           type: string
+ *           format: date-time
+ *           example: 2026-02-22T10:00:00.000Z
+ *
+ *     LoginResponse:
+ *       type: object
+ *       properties:
+ *         user:
+ *           $ref: '#/components/schemas/UserResponse'
+ *         token:
+ *           type: string
+ *           example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
  *
  *     Category:
  *       type: object

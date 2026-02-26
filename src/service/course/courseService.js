@@ -1,6 +1,6 @@
 import Course from "../../models/course/Course.js";
 import Category from "../../models/lesson/category.js";
-import User from "../../models/User.js";
+import User from "../../models/auth/user.js";
 
 const createCourse = async (courseData) => {
     // Validate required fields
