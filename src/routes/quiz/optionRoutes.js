@@ -1,19 +1,20 @@
 import express from "express";
 import * as optionController from "../../controller/quiz/optionController.js";
-// import { authenticate, authorizeAdmin } from "../../middleware/authMiddleware.js";
+import { authenticate, authorizeRoles } from "../../middleware/authMiddleware.js";
+import { ROLES } from "../../utils/constants.js";
 
 const router = express.Router();
 
-// Create option - will require admin authentication later
-router.post("/", /* authenticate, authorizeAdmin, */ optionController.createOption);
+// Create option
+router.post("/", authenticate, authorizeRoles(ROLES.ADMIN, ROLES.CONTENT_CONTRIBUTOR), optionController.createOption);
 
 // Get all options for a question
-router.get("/question/:questionId", optionController.getOptionsByQuestion);
+router.get("/question/:questionId", authenticate, optionController.getOptionsByQuestion);
 
-// Update option - will require admin authentication later
-router.put("/:id", /* authenticate, authorizeAdmin, */ optionController.updateOption);
+// Update option
+router.put("/:id", authenticate, authorizeRoles(ROLES.ADMIN, ROLES.CONTENT_CONTRIBUTOR), optionController.updateOption);
 
-// Delete option - will require admin authentication later
-router.delete("/:id", /* authenticate, authorizeAdmin, */ optionController.deleteOption);
+// Delete option
+router.delete("/:id", authenticate, authorizeRoles(ROLES.ADMIN, ROLES.CONTENT_CONTRIBUTOR), optionController.deleteOption);
 
 export default router;

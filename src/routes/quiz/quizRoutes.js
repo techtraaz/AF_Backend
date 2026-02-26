@@ -1,28 +1,29 @@
 import express from "express";
 import * as quizController from "../../controller/quiz/quizController.js";
-// import { authenticate, authorizeAdmin } from "../../middleware/authMiddleware.js";
+import { authenticate, authorizeRoles } from "../../middleware/authMiddleware.js";
+import { ROLES } from "../../utils/constants.js";
 
 const router = express.Router();
 
-// Create quiz - will require admin authentication later
-router.post("/", /* authenticate, authorizeAdmin, */ quizController.createQuiz);
+// Create quiz
+router.post("/", authenticate, authorizeRoles(ROLES.ADMIN, ROLES.CONTENT_CONTRIBUTOR), quizController.createQuiz);
 
-// Get all quizzes with optional filters
-router.get("/", quizController.getAllQuizzes);
+//Get all quizzes with optional filters
+router.get("/", authenticate, quizController.getAllQuizzes);
 
 // Get quiz by ID
-router.get("/:id", quizController.getQuizById);
+router.get("/:id", authenticate, quizController.getQuizById);
 
-// Update quiz - will require admin authentication later
-router.put("/:id", /* authenticate, authorizeAdmin, */ quizController.updateQuiz);
+// Update quiz
+router.put("/:id", authenticate, authorizeRoles(ROLES.ADMIN, ROLES.CONTENT_CONTRIBUTOR), quizController.updateQuiz);
 
-// Delete quiz - will require admin authentication later
-router.delete("/:id", /* authenticate, authorizeAdmin, */ quizController.deleteQuiz);
+// Delete quiz
+router.delete("/:id", authenticate, authorizeRoles(ROLES.ADMIN, ROLES.CONTENT_CONTRIBUTOR), quizController.deleteQuiz);
 
-// Publish quiz - will require admin authentication later
-router.patch("/:id/publish", /* authenticate, authorizeAdmin, */ quizController.publishQuiz);
+// Publish quiz
+router.patch("/:id/publish", authenticate, authorizeRoles(ROLES.ADMIN), quizController.publishQuiz);
 
-// Unpublish quiz - will require admin authentication later
-router.patch("/:id/unpublish", /* authenticate, authorizeAdmin, */ quizController.unpublishQuiz);
+// Unpublish quiz
+router.patch("/:id/unpublish", authenticate, authorizeRoles(ROLES.ADMIN), quizController.unpublishQuiz);
 
 export default router;
