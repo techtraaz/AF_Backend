@@ -2,7 +2,7 @@
  * @swagger
  * tags:
  *   name: Quiz - Options
- *   description: Option management APIs (Authentication currently disabled)
+ *   description: Option management APIs
  */
 
 /**
@@ -11,7 +11,9 @@
  *   post:
  *     summary: Create an option
  *     tags: [Quiz - Options]
- *     description: Create an option for a question (Authentication currently disabled)
+ *     description: Create an option for a question (Requires Admin or Content Contributor authentication)
+ *     security:
+ *       - bearerAuth: []
  *     requestBody:
  *       required: true
  *       content:
@@ -23,6 +25,10 @@
  *         description: Option created successfully
  *       400:
  *         description: Bad request
+ *       401:
+ *         description: Unauthorized - Invalid or missing token
+ *       403:
+ *         description: Forbidden - Admin or Content Contributor access required
  *       404:
  *         description: Question not found
  */
@@ -33,6 +39,9 @@
  *   get:
  *     summary: Get all options for a question
  *     tags: [Quiz - Options]
+ *     description: Retrieve all options for a specific question (Requires authentication)
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: questionId
@@ -59,6 +68,8 @@
  *                   type: array
  *                   items:
  *                     $ref: '#/components/schemas/Option'
+ *       401:
+ *         description: Unauthorized - Invalid or missing token
  */
 
 /**
@@ -67,7 +78,9 @@
  *   put:
  *     summary: Update option
  *     tags: [Quiz - Options]
- *     description: Update option details (Authentication currently disabled)
+ *     description: Update option details (Requires Admin or Content Contributor authentication)
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -85,6 +98,10 @@
  *     responses:
  *       200:
  *         description: Option updated successfully
+ *       401:
+ *         description: Unauthorized - Invalid or missing token
+ *       403:
+ *         description: Forbidden - Admin or Content Contributor access required
  *       404:
  *         description: Option not found
  */
@@ -95,7 +112,9 @@
  *   delete:
  *     summary: Delete option
  *     tags: [Quiz - Options]
- *     description: Delete an option (Authentication currently disabled)
+ *     description: Delete an option (Requires Admin or Content Contributor authentication)
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -107,6 +126,10 @@
  *     responses:
  *       200:
  *         description: Option deleted successfully
+ *       401:
+ *         description: Unauthorized - Invalid or missing token
+ *       403:
+ *         description: Forbidden - Admin or Content Contributor access required
  *       404:
  *         description: Option not found
  */

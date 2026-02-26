@@ -2,7 +2,7 @@
  * @swagger
  * tags:
  *   name: Course
- *   description: Course management APIs (Authentication currently disabled)
+ *   description: Course management APIs
  */
 
 /**
@@ -11,7 +11,9 @@
  *   post:
  *     summary: Create a new course
  *     tags: [Course]
- *     description: Create a new course (Admin or Content Adder) (Authentication currently disabled)
+ *     description: Create a new course (Requires Admin or Content Contributor authentication)
+ *     security:
+ *       - bearerAuth: []
  *     requestBody:
  *       required: true
  *       content:
@@ -27,6 +29,10 @@
  *               $ref: '#/components/schemas/CourseResponse'
  *       400:
  *         description: Bad request
+ *       401:
+ *         description: Unauthorized - Invalid or missing token
+ *       403:
+ *         description: Forbidden - Admin or Content Contributor access required
  */
 
 /**
@@ -35,7 +41,9 @@
  *   get:
  *     summary: Get all courses
  *     tags: [Course]
- *     description: Retrieve all courses with optional filters
+ *     description: Retrieve all courses with optional filters (Requires authentication)
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: query
  *         name: categoryId
@@ -86,137 +94,8 @@
  *                   type: array
  *                   items:
  *                     $ref: '#/components/schemas/Course'
- */
-
-/**
- * @swagger
- * /api/course/{id}:
- *   get:
- *     summary: Get course by ID
- *     tags: [Course]
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         schema:
- *           type: string
- *         description: Course ID
- *         example: 64f1c2e4a12b3456789abcde
- *     responses:
- *       200:
- *         description: Course retrieved successfully
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/CourseResponse'
- *       404:
- *         description: Course not found
- */
-
-/**
- * @swagger
- * /api/course/{id}:
- *   put:
- *     summary: Update course
- *     tags: [Course]
- *     description: Update course details (Authentication currently disabled)
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         schema:
- *           type: string
- *         description: Course ID
- *         example: 64f1c2e4a12b3456789abcde
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             $ref: '#/components/schemas/UpdateCourseRequest'
- *     responses:
- *       200:
- *         description: Course updated successfully
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/CourseResponse'
- *       404:
- *         description: Course not found
- */
-
-/**
- * @swagger
- * /api/course/{id}:
- *   delete:
- *     summary: Delete course
- *     tags: [Course]
- *     description: Delete a course (Authentication currently disabled)
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         schema:
- *           type: string
- *         description: Course ID
- *         example: 64f1c2e4a12b3456789abcde
- *     responses:
- *       200:
- *         description: Course deleted successfully
- *       404:
- *         description: Course not found
- */
-
-/**
- * @swagger
- * /api/course/{id}/publish:
- *   patch:
- *     summary: Publish course
- *     tags: [Course]
- *     description: Make a course publicly available (Authentication currently disabled)
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         schema:
- *           type: string
- *         description: Course ID
- *         example: 64f1c2e4a12b3456789abcde
- *     responses:
- *       200:
- *         description: Course published successfully
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/CourseResponse'
- *       404:
- *         description: Course not found
- */
-
-/**
- * @swagger
- * /api/course/{id}/unpublish:
- *   patch:
- *     summary: Unpublish course
- *     tags: [Course]
- *     description: Make a course unavailable (Authentication currently disabled)
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         schema:
- *           type: string
- *         description: Course ID
- *         example: 64f1c2e4a12b3456789abcde
- *     responses:
- *       200:
- *         description: Course unpublished successfully
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/CourseResponse'
- *       404:
- *         description: Course not found
+ *       401:
+ *         description: Unauthorized - Invalid or missing token
  */
 
 /**
@@ -225,7 +104,9 @@
  *   get:
  *     summary: Get courses by creator
  *     tags: [Course]
- *     description: Retrieve all courses created by a specific user
+ *     description: Retrieve all courses created by a specific user (Requires authentication)
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: creatorId
@@ -252,6 +133,8 @@
  *                   type: array
  *                   items:
  *                     $ref: '#/components/schemas/Course'
+ *       401:
+ *         description: Unauthorized - Invalid or missing token
  */
 
 /**
@@ -260,7 +143,9 @@
  *   get:
  *     summary: Get course statistics
  *     tags: [Course]
- *     description: Get statistics for a specific course
+ *     description: Get statistics for a specific course (Requires Admin or Content Contributor authentication)
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -276,6 +161,170 @@
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/CourseStatisticsResponse'
+ *       401:
+ *         description: Unauthorized - Invalid or missing token
+ *       403:
+ *         description: Forbidden - Admin or Content Contributor access required
+ *       404:
+ *         description: Course not found
+ */
+
+/**
+ * @swagger
+ * /api/course/{id}/publish:
+ *   patch:
+ *     summary: Publish course
+ *     tags: [Course]
+ *     description: Make a course publicly available (Requires Admin authentication)
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Course ID
+ *         example: 64f1c2e4a12b3456789abcde
+ *     responses:
+ *       200:
+ *         description: Course published successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/CourseResponse'
+ *       401:
+ *         description: Unauthorized - Invalid or missing token
+ *       403:
+ *         description: Forbidden - Admin access required
+ *       404:
+ *         description: Course not found
+ */
+
+/**
+ * @swagger
+ * /api/course/{id}/unpublish:
+ *   patch:
+ *     summary: Unpublish course
+ *     tags: [Course]
+ *     description: Make a course unavailable (Requires Admin authentication)
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Course ID
+ *         example: 64f1c2e4a12b3456789abcde
+ *     responses:
+ *       200:
+ *         description: Course unpublished successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/CourseResponse'
+ *       401:
+ *         description: Unauthorized - Invalid or missing token
+ *       403:
+ *         description: Forbidden - Admin access required
+ *       404:
+ *         description: Course not found
+ */
+
+/**
+ * @swagger
+ * /api/course/{id}:
+ *   get:
+ *     summary: Get course by ID
+ *     tags: [Course]
+ *     description: Retrieve a specific course by ID (Requires authentication)
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Course ID
+ *         example: 64f1c2e4a12b3456789abcde
+ *     responses:
+ *       200:
+ *         description: Course retrieved successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/CourseResponse'
+ *       401:
+ *         description: Unauthorized - Invalid or missing token
+ *       404:
+ *         description: Course not found
+ */
+
+/**
+ * @swagger
+ * /api/course/{id}:
+ *   put:
+ *     summary: Update course
+ *     tags: [Course]
+ *     description: Update course details (Requires Admin or Content Contributor authentication)
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Course ID
+ *         example: 64f1c2e4a12b3456789abcde
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/UpdateCourseRequest'
+ *     responses:
+ *       200:
+ *         description: Course updated successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/CourseResponse'
+ *       401:
+ *         description: Unauthorized - Invalid or missing token
+ *       403:
+ *         description: Forbidden - Admin or Content Contributor access required
+ *       404:
+ *         description: Course not found
+ */
+
+/**
+ * @swagger
+ * /api/course/{id}:
+ *   delete:
+ *     summary: Delete course
+ *     tags: [Course]
+ *     description: Delete a course (Requires Admin or Content Contributor authentication)
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Course ID
+ *         example: 64f1c2e4a12b3456789abcde
+ *     responses:
+ *       200:
+ *         description: Course deleted successfully
+ *       401:
+ *         description: Unauthorized - Invalid or missing token
+ *       403:
+ *         description: Forbidden - Admin or Content Contributor access required
  *       404:
  *         description: Course not found
  */
