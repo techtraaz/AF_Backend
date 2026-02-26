@@ -26,9 +26,9 @@ const options = {
     },
     apis: [
         "./src/docs/*.js",
-        "./src/routes/lesson/categoryRoutes.js",
-        "./src/routes/quiz/listeningRoutes.js",
-        "./src/routes/course/questionRoutes.js",
+        "./src/docs/lesson/*.js",
+        "./src/docs/quiz/*.js",
+        "./src/docs/course/*.js",
     ],
 };
 
