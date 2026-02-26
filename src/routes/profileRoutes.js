@@ -1,7 +1,6 @@
 import express from "express";
 import { createProfile, getProfile, updateProfile } from "../controller/profileController.js";
-import { authenticate, authorizeAdmin, authorizeRefugee, authorizeRoles } from "../middleware/authMiddleware.js";
-import { } from "../middleware/authMiddleware.js";
+import { authenticate, authorizeAdmin, authorizeRefugee, authorizeContentContributor, authorizeRoles } from "../middleware/authMiddleware.js";
 
 const router = express.Router();
 
@@ -15,7 +14,7 @@ router.post(
 router.post(
     "/create-contributor", 
     authenticate, 
-    authorizeAdmin,
+    authorizeContentContributor,
     createProfile
 );
 
