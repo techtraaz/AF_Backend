@@ -1,15 +1,16 @@
 /**
  * @swagger
  * tags:
- *   name: Digital Content
- *   description: Endpoints for uploading, reading, updating and deleting digital library content.
+ *   - name: Digital Content
+ *     description: Endpoints for uploading, reading, updating and deleting digital library content.
  */
 
 /**
  * @swagger
  * /api/digital-library:
  *   get:
- *     tags: [Digital Content]
+ *     tags:
+ *       - Digital Content
  *     summary: List all digital content
  *     description: Retrieve a list of all digital content items. Optionally filter by category.
  *     parameters:
@@ -39,9 +40,12 @@
  * @swagger
  * /api/digital-library/upload:
  *   post:
- *     tags: [Digital Content]
+ *     tags:
+ *       - Digital Content
  *     summary: Upload a new digital content item
- *     description: Create a new resource with a file upload (image, video, audio, or document).
+ *     description: Create a new resource with a file upload (image, video, audio, or document). Requires Content Contributor access.
+ *     security:
+ *       - bearerAuth: []
  *     requestBody:
  *       required: true
  *       content:
@@ -66,13 +70,18 @@
  *                   $ref: '#/components/schemas/DigitalContent'
  *       400:
  *         description: Validation failed (e.g., missing fields, invalid file)
+ *       401:
+ *         description: Unauthorized - Invalid or missing token
+ *       403:
+ *         description: Forbidden - Requires Content Contributor role
  */
 
 /**
  * @swagger
  * /api/digital-library/{id}:
  *   get:
- *     tags: [Digital Content]
+ *     tags:
+ *       - Digital Content
  *     summary: Get content by ID
  *     description: Retrieve a single digital content item by its ID.
  *     parameters:
@@ -98,9 +107,12 @@
  * @swagger
  * /api/digital-library/{id}:
  *   put:
- *     tags: [Digital Content]
+ *     tags:
+ *       - Digital Content
  *     summary: Update an existing content item
- *     description: Update text fields or replace the media file. If a new file is uploaded, the old one is deleted from Cloudinary.
+ *     description: Update text fields or replace the media file. If a new file is uploaded, the old one is deleted from Cloudinary. Only the original uploader can perform this action.
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - $ref: '#/components/parameters/IdParam'
  *     requestBody:
@@ -127,6 +139,10 @@
  *                   $ref: '#/components/schemas/DigitalContent'
  *       400:
  *         description: Validation failed
+ *       401:
+ *         description: Unauthorized - Invalid or missing token
+ *       403:
+ *         description: Forbidden - Only the original uploader can modify this content
  *       404:
  *         description: Content not found
  */
@@ -135,9 +151,12 @@
  * @swagger
  * /api/digital-library/{id}:
  *   delete:
- *     tags: [Digital Content]
+ *     tags:
+ *       - Digital Content
  *     summary: Delete a content item
- *     description: Removes the content from the database and deletes the associated file from Cloudinary.
+ *     description: Removes the content from the database and deletes the associated file from Cloudinary. Only the original uploader can perform this action.
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - $ref: '#/components/parameters/IdParam'
  *     responses:
@@ -154,6 +173,10 @@
  *                 message:
  *                   type: string
  *                   example: "Digital content and associated files deleted successfully."
+ *       401:
+ *         description: Unauthorized - Invalid or missing token
+ *       403:
+ *         description: Forbidden - Only the original uploader can delete this content
  *       404:
  *         description: Content not found
  */
@@ -161,6 +184,12 @@
 /**
  * @swagger
  * components:
+ *   securitySchemes:
+ *     bearerAuth:
+ *       type: http
+ *       scheme: bearer
+ *       bearerFormat: JWT
+ *
  *   parameters:
  *     IdParam:
  *       name: id

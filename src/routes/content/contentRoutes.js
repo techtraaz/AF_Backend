@@ -8,33 +8,42 @@ import { digitalContentUploadMiddleware } from '../../middleware/content/uploadM
 import { validateDigitalContent } from '../../middleware/content/contentValidationMiddleware.js';
 import * as contentController from '../../controller/content/contentController.js';
 
+// Import authentication and authorization middlewares
+import { authenticate, authorizeContentContributor } from '../../middleware/authMiddleware.js';
+
 const router = express.Router();
 
-// POST /api/digital-library/upload
-router.post(
-  '/upload',
-  digitalContentUploadMiddleware, 
-  validateDigitalContent,         
-  contentController.createContent
-);
-
-// GET /api/digital-library/
+// GET /api/digital-library/ (Publicly accessible to everyone)
 router.get(
   '/',
   contentController.getAllContent
 );
 
-// PUT /api/digital-library/:id
+// POST /api/digital-library/upload (Restricted to authenticated Content Contributors only)
+router.post(
+  '/upload',
+  authenticate,
+  authorizeContentContributor,
+  digitalContentUploadMiddleware, 
+  validateDigitalContent,         
+  contentController.createContent
+);
+
+// PUT /api/digital-library/:id (Restricted to authenticated Content Contributors only)
 router.put(
   '/:id',
+  authenticate,
+  authorizeContentContributor,
   digitalContentUploadMiddleware,
   validateDigitalContent,         
   contentController.updateContent
 );
 
-// DELETE /api/digital-library/:id
+// DELETE /api/digital-library/:id (Restricted to authenticated Content Contributors only)
 router.delete(
   '/:id',
+  authenticate,
+  authorizeContentContributor,
   contentController.deleteContent
 );
 
