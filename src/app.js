@@ -5,7 +5,6 @@ import {swaggerSpec} from "./docs/swagger.js";
 import swaggerUi from "swagger-ui-express";
 
 import responseGenerator from "./middleware/responseGenerator.js";
-import {authenticate} from "./middleware/authMiddleware.js";
 
 import authRoutes from "./routes/authRoutes.js";
 import adminRoutes from "./routes/adminRoute.js";
@@ -27,7 +26,6 @@ app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(responseGenerator);
-app.use(authenticate);
 
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 

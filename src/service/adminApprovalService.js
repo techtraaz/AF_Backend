@@ -1,4 +1,4 @@
-import User from "../models/user.js";
+import User from "../models/auth/user.js";
 import { ROLES, ACCOUNT_STATUSES } from "../utils/constants.js";
 
 const getPendingContributors = async () => {
