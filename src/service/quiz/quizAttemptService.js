@@ -17,7 +17,7 @@ const submitQuizAttempt = async (attemptData) => {
         throw new Error("Cannot attempt unpublished quiz");
     }
 
-    // Check max attempts
+    // Check max attempts per user
     if (quiz.maxAttempts) {
         const previousAttempts = await QuizAttempt.countDocuments({
             refugeeId,
@@ -29,9 +29,30 @@ const submitQuizAttempt = async (attemptData) => {
         }
     }
 
+    // Validate time limit
+    if (quiz.timeLimitMinutes && timeTakenSeconds) {
+        const timeLimitSeconds = quiz.timeLimitMinutes * 60;
+        if (timeTakenSeconds > timeLimitSeconds) {
+            throw new Error(`Time limit exceeded. Maximum time allowed: ${quiz.timeLimitMinutes} minutes`);
+        }
+    }
+
     // Get all questions for this quiz
     const questions = await Question.find({ quizId });
     const totalQuestions = questions.length;
+
+    // Validate all questions answered
+    if (responses.length < totalQuestions) {
+        throw new Error(`All questions must be answered. Expected: ${totalQuestions}, Received: ${responses.length}`);
+    }
+
+    // Validate no duplicate question responses
+    const questionIds = responses.map(r => r.questionId);
+    const uniqueQuestionIds = new Set(questionIds);
+    if (questionIds.length !== uniqueQuestionIds.size) {
+        throw new Error("Duplicate responses for the same question are not allowed");
+    }
+
     const totalPoints = questions.reduce((sum, q) => sum + q.points, 0);
 
     // Score the attempt
@@ -41,11 +62,18 @@ const submitQuizAttempt = async (attemptData) => {
 
     for (const response of responses) {
         const question = questions.find(q => q._id.toString() === response.questionId);
-        if (!question) continue;
+        if (!question) {
+            throw new Error(`Question ${response.questionId} not found in this quiz`);
+        }
 
         let isCorrect = false;
 
+        // Validate response format matches question type
         if (question.type === 'multiple_select') {
+            if (!response.selectedOptionIds || response.selectedOptionIds.length === 0) {
+                throw new Error(`Question ${response.questionId} requires multiple selections`);
+            }
+
             // For multiple select, check if all selected options are correct
             const correctOptions = await Option.find({
                 questionId: question._id,
@@ -59,8 +87,21 @@ const submitQuizAttempt = async (attemptData) => {
             isCorrect = JSON.stringify(correctOptionIds) === JSON.stringify(selectedIds);
         } else {
             // For single select questions
+            if (!response.selectedOptionId) {
+                throw new Error(`Question ${response.questionId} requires a single selection`);
+            }
+
             const selectedOption = await Option.findById(response.selectedOptionId);
-            isCorrect = selectedOption?.isCorrect || false;
+            if (!selectedOption) {
+                throw new Error(`Selected option ${response.selectedOptionId} not found`);
+            }
+
+            // Validate option belongs to the question
+            if (selectedOption.questionId.toString() !== question._id.toString()) {
+                throw new Error(`Option ${response.selectedOptionId} does not belong to question ${response.questionId}`);
+            }
+
+            isCorrect = selectedOption.isCorrect || false;
         }
 
         if (isCorrect) {

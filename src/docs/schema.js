@@ -1,7 +1,29 @@
 /**
  * @swagger
  * components:
+ *   securitySchemes:
+ *     BearerAuth:
+ *       type: http
+ *       scheme: bearer
+ *       bearerFormat: JWT
+ * 
  *   schemas:
+ *  # ============ COMMON SCHEMAS ============
+ *
+ *     ApiResponse:
+ *       type: object
+ *       properties:
+ *         code:
+ *           type: integer
+ *           example: 200
+ *         message:
+ *           type: string
+ *           example: Success
+ *         content:
+ *           type: object
+ *           nullable: true
+ *
+ *  # ============ AUTH SCHEMAS ============
  *
  *     SignupRequest:
  *       type: object
@@ -11,10 +33,12 @@
  *       properties:
  *         email:
  *           type: string
+ *           format: email
  *           example: user@example.com
  *         password:
  *           type: string
- *           example: 123456
+ *           format: password
+ *           example: StrongPassword123
  *
  *     LoginRequest:
  *       type: object
@@ -24,23 +48,231 @@
  *       properties:
  *         email:
  *           type: string
+ *           format: email
  *           example: user@example.com
  *         password:
  *           type: string
- *           example: 123456
+ *           format: password
+ *           example: StrongPassword123
  *
- *     AuthResponse:
+ *     UserResponse:
  *       type: object
  *       properties:
- *         code:
- *           type: number
- *           example: 200
- *         message:
+ *         _id:
  *           type: string
- *           example: Login successful
- *         content:
- *           type: object
+ *           example: 65f1a2b3c4d5e6f7a8b9c0d1
+ *         email:
+ *           type: string
+ *           format: email
+ *           example: user@example.com
+ *         role:
+ *           type: string
+ *           enum: [REFUGEE, CONTENT_CONTRIBUTOR, ADMIN]
+ *           example: REFUGEE
+ *         status:
+ *           type: string
+ *           enum: [ACTIVE, PENDING, REJECTED]
+ *           example: ACTIVE
+ *         isActive:
+ *           type: boolean
+ *           example: true
+ *         createdAt:
+ *           type: string
+ *           format: date-time
+ *           example: 2026-02-22T10:00:00.000Z
+ *         updatedAt:
+ *           type: string
+ *           format: date-time
+ *           example: 2026-02-22T10:00:00.000Z
  *
+ *     LoginResponse:
+ *       type: object
+ *       properties:
+ *         user:
+ *           $ref: '#/components/schemas/UserResponse'
+ *         token:
+ *           type: string
+ *           example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+ *
+ *  # ============ PROFILE SCHEMAS ============
+ *
+ *     RefugeeProfile:
+ *       type: object
+ *       properties:
+ *         _id:
+ *           type: string
+ *           example: 65f1a2b3c4d5e6f7a8b9c0d1
+ *         userId:
+ *           type: string
+ *           example: 65f1a2b3c4d5e6f7a8b9c0d2
+ *         fullName:
+ *           type: string
+ *           example: John Doe
+ *         dateOfBirth:
+ *           type: string
+ *           format: date
+ *           example: 1990-05-15
+ *         nationality:
+ *           type: string
+ *           example: Syrian
+ *         preferredLanguage:
+ *           type: string
+ *           example: Arabic
+ *         createdAt:
+ *           type: string
+ *           format: date-time
+ *           example: 2026-02-22T10:00:00.000Z
+ *         updatedAt:
+ *           type: string
+ *           format: date-time
+ *           example: 2026-02-22T10:00:00.000Z
+ *
+ *     CreateRefugeeProfileRequest:
+ *       type: object
+ *       required:
+ *         - fullName
+ *       properties:
+ *         fullName:
+ *           type: string
+ *           example: John Doe
+ *         dateOfBirth:
+ *           type: string
+ *           format: date
+ *           example: 1990-05-15
+ *         nationality:
+ *           type: string
+ *           example: Syrian
+ *         preferredLanguage:
+ *           type: string
+ *           example: Arabic
+ *
+ *     UpdateRefugeeProfileRequest:
+ *       type: object
+ *       properties:
+ *         fullName:
+ *           type: string
+ *           example: John Doe Updated
+ *         dateOfBirth:
+ *           type: string
+ *           format: date
+ *           example: 1990-05-15
+ *         nationality:
+ *           type: string
+ *           example: Syrian
+ *         preferredLanguage:
+ *           type: string
+ *           example: French
+ *
+ *     ContentContributorProfile:
+ *       type: object
+ *       properties:
+ *         _id:
+ *           type: string
+ *           example: 65f1a2b3c4d5e6f7a8b9c0d1
+ *         userId:
+ *           type: string
+ *           example: 65f1a2b3c4d5e6f7a8b9c0d2
+ *         fullName:
+ *           type: string
+ *           example: Jane Smith
+ *         bio:
+ *           type: string
+ *           example: Experienced language teacher with 10 years of teaching English.
+ *         expertise:
+ *           type: array
+ *           items:
+ *             type: string
+ *           example: [English, Grammar, Vocabulary]
+ *         createdAt:
+ *           type: string
+ *           format: date-time
+ *           example: 2026-02-22T10:00:00.000Z
+ *         updatedAt:
+ *           type: string
+ *           format: date-time
+ *           example: 2026-02-22T10:00:00.000Z
+ *
+ *     CreateContributorProfileRequest:
+ *       type: object
+ *       required:
+ *         - fullName
+ *       properties:
+ *         fullName:
+ *           type: string
+ *           example: Jane Smith
+ *         bio:
+ *           type: string
+ *           example: Experienced language teacher with 10 years of teaching English.
+ *         expertise:
+ *           type: array
+ *           items:
+ *             type: string
+ *           example: [English, Grammar, Vocabulary]
+ *
+ *     UpdateContributorProfileRequest:
+ *       type: object
+ *       properties:
+ *         fullName:
+ *           type: string
+ *           example: Jane Smith Updated
+ *         bio:
+ *           type: string
+ *           example: Updated bio with new experience details.
+ *         expertise:
+ *           type: array
+ *           items:
+ *             type: string
+ *           example: [English, Grammar, Pronunciation]
+ *
+ *     AdminProfile:
+ *       type: object
+ *       properties:
+ *         _id:
+ *           type: string
+ *           example: 65f1a2b3c4d5e6f7a8b9c0d1
+ *         userId:
+ *           type: string
+ *           example: 65f1a2b3c4d5e6f7a8b9c0d2
+ *         fullName:
+ *           type: string
+ *           example: Admin User
+ *         accessLevel:
+ *           type: string
+ *           enum: [STANDARD, SUPER]
+ *           example: STANDARD
+ *         createdAt:
+ *           type: string
+ *           format: date-time
+ *           example: 2026-02-22T10:00:00.000Z
+ *         updatedAt:
+ *           type: string
+ *           format: date-time
+ *           example: 2026-02-22T10:00:00.000Z
+ *
+ *     CreateAdminProfileRequest:
+ *       type: object
+ *       required:
+ *         - fullName
+ *       properties:
+ *         fullName:
+ *           type: string
+ *           example: Admin User
+ *         accessLevel:
+ *           type: string
+ *           enum: [STANDARD, SUPER]
+ *           example: STANDARD
+ *
+ *     UpdateAdminProfileRequest:
+ *       type: object
+ *       properties:
+ *         fullName:
+ *           type: string
+ *           example: Admin User Updated
+ *         accessLevel:
+ *           type: string
+ *           enum: [STANDARD, SUPER]
+ *           example: SUPER
+ * 
  *     Category:
  *       type: object
  *       properties:
@@ -969,4 +1201,348 @@
  *           example: Course statistics retrieved successfully
  *         content:
  *           $ref: '#/components/schemas/CourseStatistics'
+ * 
+ *  # ============ FORUM SCHEMAS ============
+ *
+ *     Forum:
+ *       type: object
+ *       properties:
+ *         _id:
+ *           type: string
+ *           example: 64f1c2e4a12b3456789abcde
+ *         name:
+ *           type: string
+ *           example: English Learners Hub
+ *         description:
+ *           type: string
+ *           example: A place to discuss English learning tips and experiences
+ *         createdBy:
+ *           type: object
+ *           properties:
+ *             _id:
+ *               type: string
+ *               example: 64f1c2e4a12b3456789abcdf
+ *             email:
+ *               type: string
+ *               example: admin@example.com
+ *             role:
+ *               type: string
+ *               example: ADMIN
+ *         isActive:
+ *           type: boolean
+ *           example: true
+ *         createdAt:
+ *           type: string
+ *           format: date-time
+ *           example: 2026-02-22T10:00:00.000Z
+ *         updatedAt:
+ *           type: string
+ *           format: date-time
+ *           example: 2026-02-22T10:00:00.000Z
+ *
+ *     CreateForumRequest:
+ *       type: object
+ *       required:
+ *         - name
+ *         - description
+ *       properties:
+ *         name:
+ *           type: string
+ *           example: English Learners Hub
+ *         description:
+ *           type: string
+ *           example: A place to discuss English learning tips and experiences
+ *
+ *     UpdateForumRequest:
+ *       type: object
+ *       properties:
+ *         name:
+ *           type: string
+ *           example: English Learners Hub Updated
+ *         description:
+ *           type: string
+ *           example: Updated forum description
+ *
+ *     ForumMembership:
+ *       type: object
+ *       properties:
+ *         _id:
+ *           type: string
+ *           example: 64f1c2e4a12b3456789abcde
+ *         forumId:
+ *           type: string
+ *           example: 64f1c2e4a12b3456789abcdf
+ *         userId:
+ *           type: string
+ *           example: 64f1c2e4a12b3456789abce0
+ *         createdAt:
+ *           type: string
+ *           format: date-time
+ *           example: 2026-02-22T10:00:00.000Z
+ *
+ *     ForumBan:
+ *       type: object
+ *       properties:
+ *         _id:
+ *           type: string
+ *           example: 64f1c2e4a12b3456789abcde
+ *         forumId:
+ *           type: string
+ *           example: 64f1c2e4a12b3456789abcdf
+ *         userId:
+ *           type: string
+ *           example: 64f1c2e4a12b3456789abce0
+ *         bannedBy:
+ *           type: string
+ *           example: 64f1c2e4a12b3456789abce1
+ *         reason:
+ *           type: string
+ *           example: Repeated violations of community guidelines
+ *         isActive:
+ *           type: boolean
+ *           example: true
+ *         createdAt:
+ *           type: string
+ *           format: date-time
+ *           example: 2026-02-22T10:00:00.000Z
+ *
+ *     BanUserRequest:
+ *       type: object
+ *       required:
+ *         - targetUserId
+ *         - reason
+ *       properties:
+ *         targetUserId:
+ *           type: string
+ *           example: 64f1c2e4a12b3456789abcde
+ *         reason:
+ *           type: string
+ *           example: Repeated violations of community guidelines
+ *
+ *     UnbanUserRequest:
+ *       type: object
+ *       required:
+ *         - targetUserId
+ *       properties:
+ *         targetUserId:
+ *           type: string
+ *           example: 64f1c2e4a12b3456789abcde
+ *
+ *     Post:
+ *       type: object
+ *       properties:
+ *         _id:
+ *           type: string
+ *           example: 64f1c2e4a12b3456789abcde
+ *         forumId:
+ *           type: object
+ *           properties:
+ *             _id:
+ *               type: string
+ *               example: 64f1c2e4a12b3456789abcdf
+ *             name:
+ *               type: string
+ *               example: English Learners Hub
+ *         authorId:
+ *           type: object
+ *           properties:
+ *             _id:
+ *               type: string
+ *               example: 64f1c2e4a12b3456789abce0
+ *             email:
+ *               type: string
+ *               example: user@example.com
+ *             role:
+ *               type: string
+ *               example: REFUGEE
+ *         title:
+ *           type: string
+ *           example: How do I practice English pronunciation?
+ *         content:
+ *           type: string
+ *           example: I am struggling with English pronunciation. Any tips?
+ *         upvoteCount:
+ *           type: integer
+ *           example: 10
+ *         answerCount:
+ *           type: integer
+ *           example: 3
+ *         isDeleted:
+ *           type: boolean
+ *           example: false
+ *         createdAt:
+ *           type: string
+ *           format: date-time
+ *           example: 2026-02-22T10:00:00.000Z
+ *         updatedAt:
+ *           type: string
+ *           format: date-time
+ *           example: 2026-02-22T10:00:00.000Z
+ *
+ *     CreatePostRequest:
+ *       type: object
+ *       required:
+ *         - title
+ *         - content
+ *       properties:
+ *         title:
+ *           type: string
+ *           example: How do I practice English pronunciation?
+ *         content:
+ *           type: string
+ *           example: I am struggling with English pronunciation. Any tips?
+ *
+ *     UpdatePostRequest:
+ *       type: object
+ *       properties:
+ *         title:
+ *           type: string
+ *           example: Updated post title
+ *         content:
+ *           type: string
+ *           example: Updated post content
+ *
+ *     PaginatedPostsResponse:
+ *       type: object
+ *       properties:
+ *         posts:
+ *           type: array
+ *           items:
+ *             $ref: '#/components/schemas/Post'
+ *         total:
+ *           type: integer
+ *           example: 50
+ *         page:
+ *           type: integer
+ *           example: 1
+ *         totalPages:
+ *           type: integer
+ *           example: 5
+ *
+ *     Answer:
+ *       type: object
+ *       properties:
+ *         _id:
+ *           type: string
+ *           example: 64f1c2e4a12b3456789abcde
+ *         postId:
+ *           type: string
+ *           example: 64f1c2e4a12b3456789abcdf
+ *         authorId:
+ *           type: object
+ *           properties:
+ *             _id:
+ *               type: string
+ *               example: 64f1c2e4a12b3456789abce0
+ *             email:
+ *               type: string
+ *               example: user@example.com
+ *             role:
+ *               type: string
+ *               example: REFUGEE
+ *         content:
+ *           type: string
+ *           example: You can practice by listening to native speakers and repeating.
+ *         upvoteCount:
+ *           type: integer
+ *           example: 5
+ *         isAccepted:
+ *           type: boolean
+ *           example: false
+ *         isDeleted:
+ *           type: boolean
+ *           example: false
+ *         createdAt:
+ *           type: string
+ *           format: date-time
+ *           example: 2026-02-22T10:00:00.000Z
+ *         updatedAt:
+ *           type: string
+ *           format: date-time
+ *           example: 2026-02-22T10:00:00.000Z
+ *
+ *     CreateAnswerRequest:
+ *       type: object
+ *       required:
+ *         - content
+ *       properties:
+ *         content:
+ *           type: string
+ *           example: You can practice by listening to native speakers and repeating.
+ *
+ *     UpdateAnswerRequest:
+ *       type: object
+ *       required:
+ *         - content
+ *       properties:
+ *         content:
+ *           type: string
+ *           example: Updated answer content here.
+ *
+ *     Vote:
+ *       type: object
+ *       properties:
+ *         _id:
+ *           type: string
+ *           example: 64f1c2e4a12b3456789abcde
+ *         userId:
+ *           type: string
+ *           example: 64f1c2e4a12b3456789abcdf
+ *         targetId:
+ *           type: string
+ *           example: 64f1c2e4a12b3456789abce0
+ *         targetType:
+ *           type: string
+ *           enum: [Post, Answer]
+ *           example: Post
+ *         voteType:
+ *           type: string
+ *           enum: [upvote, downvote]
+ *           example: upvote
+ *         createdAt:
+ *           type: string
+ *           format: date-time
+ *           example: 2026-02-22T10:00:00.000Z
+ *
+ *     CastVoteRequest:
+ *       type: object
+ *       required:
+ *         - targetId
+ *         - targetType
+ *         - voteType
+ *       properties:
+ *         targetId:
+ *           type: string
+ *           example: 64f1c2e4a12b3456789abcde
+ *         targetType:
+ *           type: string
+ *           enum: [Post, Answer]
+ *           example: Post
+ *         voteType:
+ *           type: string
+ *           enum: [upvote, downvote]
+ *           example: upvote
+ *
+ *     VoteRemovedResponse:
+ *       type: object
+ *       properties:
+ *         message:
+ *           type: string
+ *           example: Vote removed
+ *
+ *     CastVoteResponse:
+ *       type: object
+ *       properties:
+ *         code:
+ *           type: integer
+ *           example: 200
+ *         message:
+ *           type: string
+ *           example: Vote cast
+ *         content:
+ *           oneOf:
+ *             - $ref: '#/components/schemas/Vote'
+ *             - $ref: '#/components/schemas/VoteRemovedResponse'
+ *             - type: 'null'
+ *
  */

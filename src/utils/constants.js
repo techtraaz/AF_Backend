@@ -11,7 +11,6 @@ const STATUS = {
 
 const ROLES = {
   ADMIN: "ADMIN",
-  USER: "USER",
   CONTENT_CONTRIBUTOR: "CONTENT_CONTRIBUTOR",
   REFUGEE: "REFUGEE",
 };
@@ -35,11 +34,11 @@ const ACCESS_LEVELS = {
 };
 
 const EDUCATION_LEVELS = {
-  NONE: "none",
-  PRIMARY: "primary",
-  SECONDARY: "secondary",
-  HIGHER: "higher",
-  UNIVERSITY: "university"
+  NONE: "NONE",
+  PRIMARY: "PRIMARY",
+  SECONDARY: "SECONDARY",
+  HIGHER: "HIGHER",
+  UNIVERSITY: "UNIVERSITY"
 };
 
 const VOTE_TARGET_TYPES = {

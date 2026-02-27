@@ -2,7 +2,7 @@
  * @swagger
  * tags:
  *   name: Quiz - Attempts
- *   description: Quiz attempt and submission APIs (Authentication currently disabled)
+ *   description: Quiz attempt and submission APIs
  */
 
 /**
@@ -11,7 +11,9 @@
  *   post:
  *     summary: Submit quiz attempt
  *     tags: [Quiz - Attempts]
- *     description: Submit answers and get scored (Authentication currently disabled)
+ *     description: Submit answers and get scored (Requires authentication)
+ *     security:
+ *       - bearerAuth: []
  *     requestBody:
  *       required: true
  *       content:
@@ -27,6 +29,8 @@
  *               $ref: '#/components/schemas/QuizAttemptResponse'
  *       400:
  *         description: Bad request - Quiz not published or max attempts reached
+ *       401:
+ *         description: Unauthorized - Invalid or missing token
  *       404:
  *         description: Quiz not found
  */
@@ -37,6 +41,9 @@
  *   get:
  *     summary: Get attempt by ID with responses
  *     tags: [Quiz - Attempts]
+ *     description: Retrieve a specific attempt with responses (Requires authentication)
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -52,6 +59,8 @@
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/AttemptWithResponsesResponse'
+ *       401:
+ *         description: Unauthorized - Invalid or missing token
  *       404:
  *         description: Attempt not found
  */
@@ -62,6 +71,9 @@
  *   get:
  *     summary: Get all attempts for a user
  *     tags: [Quiz - Attempts]
+ *     description: Retrieve all attempts for a specific user (Requires authentication)
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: refugeeId
@@ -94,6 +106,8 @@
  *                   type: array
  *                   items:
  *                     $ref: '#/components/schemas/QuizAttempt'
+ *       401:
+ *         description: Unauthorized - Invalid or missing token
  */
 
 /**
@@ -102,7 +116,9 @@
  *   get:
  *     summary: Get quiz statistics
  *     tags: [Quiz - Attempts]
- *     description: Get attempt statistics for a quiz
+ *     description: Get attempt statistics for a quiz (Requires Admin or Content Contributor authentication)
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: quizId
@@ -118,4 +134,8 @@
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/QuizStatisticsResponse'
+ *       401:
+ *         description: Unauthorized - Invalid or missing token
+ *       403:
+ *         description: Forbidden - Admin or Content Contributor access required
  */

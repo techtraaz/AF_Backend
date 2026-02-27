@@ -2,7 +2,7 @@
  * @swagger
  * tags:
  *   name: Quiz - Quizzes
- *   description: Quiz CRUD operations (Authentication currently disabled)
+ *   description: Quiz CRUD operations
  */
 
 /**
@@ -11,7 +11,9 @@
  *   post:
  *     summary: Create a new quiz
  *     tags: [Quiz - Quizzes]
- *     description: Create a quiz for either a course or a lesson (Authentication currently disabled)
+ *     description: Create a quiz for either a course or a lesson (Requires Admin or Content Contributor authentication)
+ *     security:
+ *       - bearerAuth: []
  *     requestBody:
  *       required: true
  *       content:
@@ -27,6 +29,10 @@
  *               $ref: '#/components/schemas/QuizResponse'
  *       400:
  *         description: Bad request - Quiz must belong to either course or lesson
+ *       401:
+ *         description: Unauthorized - Invalid or missing token
+ *       403:
+ *         description: Forbidden - Admin or Content Contributor access required
  */
 
 /**
@@ -35,7 +41,9 @@
  *   get:
  *     summary: Get all quizzes
  *     tags: [Quiz - Quizzes]
- *     description: Retrieve all quizzes with optional filters
+ *     description: Retrieve all quizzes with optional filters (Requires authentication)
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: query
  *         name: courseId
@@ -73,6 +81,8 @@
  *                   type: array
  *                   items:
  *                     $ref: '#/components/schemas/Quiz'
+ *       401:
+ *         description: Unauthorized - Invalid or missing token
  */
 
 /**
@@ -81,6 +91,9 @@
  *   get:
  *     summary: Get quiz by ID
  *     tags: [Quiz - Quizzes]
+ *     description: Retrieve a specific quiz by ID (Requires authentication)
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -96,6 +109,8 @@
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/QuizResponse'
+ *       401:
+ *         description: Unauthorized - Invalid or missing token
  *       404:
  *         description: Quiz not found
  */
@@ -106,7 +121,9 @@
  *   put:
  *     summary: Update quiz
  *     tags: [Quiz - Quizzes]
- *     description: Update quiz details (Authentication currently disabled)
+ *     description: Update quiz details (Requires Admin or Content Contributor authentication)
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -128,6 +145,10 @@
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/QuizResponse'
+ *       401:
+ *         description: Unauthorized - Invalid or missing token
+ *       403:
+ *         description: Forbidden - Admin or Content Contributor access required
  *       404:
  *         description: Quiz not found
  */
@@ -138,7 +159,9 @@
  *   delete:
  *     summary: Delete quiz
  *     tags: [Quiz - Quizzes]
- *     description: Delete quiz and all associated questions and options (Authentication currently disabled)
+ *     description: Delete quiz and all associated questions and options (Requires Admin or Content Contributor authentication)
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -150,6 +173,10 @@
  *     responses:
  *       200:
  *         description: Quiz deleted successfully
+ *       401:
+ *         description: Unauthorized - Invalid or missing token
+ *       403:
+ *         description: Forbidden - Admin or Content Contributor access required
  *       404:
  *         description: Quiz not found
  */
@@ -160,7 +187,9 @@
  *   patch:
  *     summary: Publish quiz
  *     tags: [Quiz - Quizzes]
- *     description: Publish a quiz (requires at least one question) (Authentication currently disabled)
+ *     description: Publish a quiz (requires at least one question) (Requires Admin authentication)
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -174,6 +203,10 @@
  *         description: Quiz published successfully
  *       400:
  *         description: Cannot publish quiz without questions
+ *       401:
+ *         description: Unauthorized - Invalid or missing token
+ *       403:
+ *         description: Forbidden - Admin access required
  *       404:
  *         description: Quiz not found
  */
@@ -184,7 +217,9 @@
  *   patch:
  *     summary: Unpublish quiz
  *     tags: [Quiz - Quizzes]
- *     description: Unpublish a quiz (Authentication currently disabled)
+ *     description: Unpublish a quiz (Requires Admin authentication)
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -196,6 +231,10 @@
  *     responses:
  *       200:
  *         description: Quiz unpublished successfully
+ *       401:
+ *         description: Unauthorized - Invalid or missing token
+ *       403:
+ *         description: Forbidden - Admin access required
  *       404:
  *         description: Quiz not found
  */

@@ -1,25 +1,26 @@
 import express from "express";
 import * as questionController from "../../controller/quiz/questionController.js";
-// import { authenticate, authorizeAdmin } from "../../middleware/authMiddleware.js";
+import { authenticate, authorizeRoles } from "../../middleware/authMiddleware.js";
+import { ROLES } from "../../utils/constants.js";
 
 const router = express.Router();
 
-// Create question (with optional options) - will require admin authentication later
-router.post("/", /* authenticate, authorizeAdmin, */ questionController.createQuestion);
+// Create question (with optional options)
+router.post("/", authenticate, authorizeRoles(ROLES.ADMIN, ROLES.CONTENT_CONTRIBUTOR), questionController.createQuestion);
 
 // Get all questions for a quiz
-router.get("/quiz/:quizId", questionController.getAllQuestionsByQuiz);
+router.get("/quiz/:quizId", authenticate, questionController.getAllQuestionsByQuiz);
 
 // Get question by ID with options
-router.get("/:id", questionController.getQuestionById);
+router.get("/:id", authenticate, questionController.getQuestionById);
 
-// Update question - will require admin authentication later
-router.put("/:id", /* authenticate, authorizeAdmin, */ questionController.updateQuestion);
+// Update question
+router.put("/:id", authenticate, authorizeRoles(ROLES.ADMIN, ROLES.CONTENT_CONTRIBUTOR), questionController.updateQuestion);
 
-// Delete question - will require admin authentication later
-router.delete("/:id", /* authenticate, authorizeAdmin, */ questionController.deleteQuestion);
+// Delete question
+router.delete("/:id", authenticate, authorizeRoles(ROLES.ADMIN, ROLES.CONTENT_CONTRIBUTOR), questionController.deleteQuestion);
 
-// Reorder questions within a quiz - will require admin authentication later
-router.patch("/quiz/:quizId/reorder", /* authenticate, authorizeAdmin, */ questionController.reorderQuestions);
+// Reorder questions within a quiz
+router.patch("/quiz/:quizId/reorder", authenticate, authorizeRoles(ROLES.ADMIN, ROLES.CONTENT_CONTRIBUTOR), questionController.reorderQuestions);
 
 export default router;

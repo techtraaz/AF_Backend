@@ -8,6 +8,21 @@ const createQuiz = async (quizData) => {
         throw new Error("Quiz must belong to either a course or a lesson");
     }
 
+    // Validate passingScore
+    if (quizData.passingScore < 0 || quizData.passingScore > 100) {
+        throw new Error("Passing score must be between 0 and 100");
+    }
+
+    // Validate timeLimitMinutes
+    if (quizData.timeLimitMinutes && quizData.timeLimitMinutes <= 0) {
+        throw new Error("Time limit must be greater than 0");
+    }
+
+    // Validate maxAttempts
+    if (quizData.maxAttempts && quizData.maxAttempts <= 0) {
+        throw new Error("Max attempts must be greater than 0");
+    }
+
     const quiz = await Quiz.create(quizData);
     return quiz;
 };
@@ -40,29 +55,69 @@ const getQuizById = async (quizId) => {
 };
 
 const updateQuiz = async (quizId, updateData) => {
+    const quiz = await Quiz.findById(quizId);
+    
+    if (!quiz) {
+        throw new Error("Quiz not found");
+    }
+
+    // Prevent updating published quiz
+    if (quiz.isPublished) {
+        throw new Error("Cannot update a published quiz. Unpublish it first.");
+    }
+
     // Prevent changing courseId/lessonId after creation
     delete updateData.courseId;
     delete updateData.lessonId;
+    
+    // Prevent manual update of totalLessons and totalEnrollments
+    delete updateData.totalLessons;
+    delete updateData.totalEnrollments;
 
-    const quiz = await Quiz.findByIdAndUpdate(
+    // Validate passingScore if provided
+    if (updateData.passingScore !== undefined && 
+        (updateData.passingScore < 0 || updateData.passingScore > 100)) {
+        throw new Error("Passing score must be between 0 and 100");
+    }
+
+    // Validate timeLimitMinutes if provided
+    if (updateData.timeLimitMinutes !== undefined && updateData.timeLimitMinutes <= 0) {
+        throw new Error("Time limit must be greater than 0");
+    }
+
+    // Validate maxAttempts if provided
+    if (updateData.maxAttempts !== undefined && updateData.maxAttempts <= 0) {
+        throw new Error("Max attempts must be greater than 0");
+    }
+
+    const updatedQuiz = await Quiz.findByIdAndUpdate(
         quizId,
         updateData,
         { new: true, runValidators: true }
     );
 
-    if (!quiz) {
-        throw new Error("Quiz not found");
-    }
-
-    return quiz;
+    return updatedQuiz;
 };
 
 const deleteQuiz = async (quizId) => {
-    const quiz = await Quiz.findByIdAndDelete(quizId);
+    const quiz = await Quiz.findById(quizId);
     
     if (!quiz) {
         throw new Error("Quiz not found");
     }
+
+    // Prevent deleting published quiz
+    if (quiz.isPublished) {
+        throw new Error("Cannot delete a published quiz. Unpublish it first.");
+    }
+    
+    // Check if quiz has attempts
+    const attemptCount = await QuizAttempt.countDocuments({ quizId });
+    if (attemptCount > 0) {
+        throw new Error("Cannot delete quiz with existing attempts");
+    }
+
+    await Quiz.findByIdAndDelete(quizId);
 
     // Delete associated questions and options
     const questions = await Question.find({ quizId });

@@ -1,7 +1,7 @@
 import Post from "../../models/forum/Post.js";
-import ForumMembership from "../../models/forum/ForumMembership.js";
-import ForumBan from "../../models/forum/ForumBan.js";
-import Forum from "../../models/forum/Forum.js";
+import ForumMembership from "../../models/forum/forumMembership.js";
+import ForumBan from "../../models/forum/forumBan.js";
+import Forum from "../../models/forum/forum.js";
 
 // Helper: Verify user is a member and not banned
 const verifyForumAccess = async (userId, forumId) => {
