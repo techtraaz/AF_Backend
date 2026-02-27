@@ -1,4 +1,4 @@
-# AF_Backend
+# Wordigo
 
 > **A Language Learning Platform for Displaced Populations & Refugee Education**
 
@@ -6,11 +6,11 @@ A modern Node.js backend API built with Express.js and MongoDB, designed to prov
 
 ## 🎯 Mission
 
-AF_Backend powers a comprehensive language learning web application dedicated to supporting displaced populations and refugees in their journey toward linguistic proficiency and social integration. Our platform provides structured, engaging, and culturally-sensitive language education to those who need it most.
+Wordigo powers a comprehensive language learning web application dedicated to supporting displaced populations and refugees in their journey toward linguistic proficiency and social integration. Our platform provides structured, engaging, and culturally-sensitive language education to those who need it most.
 
 ## 📋 Overview
 
-AF_Backend is a RESTful API server built with:
+Wordigo is a RESTful API server built with:
 - **Express.js** - Fast and minimal web framework
 - **MongoDB** - NoSQL database with Mongoose ODM
 - **JWT** - Secure authentication and authorization
