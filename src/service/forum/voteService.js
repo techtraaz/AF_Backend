@@ -1,8 +1,8 @@
 import Vote from "../../models/forum/Vote.js";
 import Post from "../../models/forum/Post.js";
 import Answer from "../../models/forum/Answer.js";
-import ForumBan from "../../models/forum/ForumBan.js";
-import ForumMembership from "../../models/forum/ForumMembership.js";
+import ForumBan from "../../models/forum/forumBan.js";
+import ForumMembership from "../../models/forum/forumMembership.js";
 
 const TARGET_MODELS = {
     Post,

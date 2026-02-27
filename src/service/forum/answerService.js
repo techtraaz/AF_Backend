@@ -1,7 +1,7 @@
 import Answer from "../../models/forum/Answer.js";
 import Post from "../../models/forum/Post.js";
-import ForumBan from "../../models/forum/ForumBan.js";
-import ForumMembership from "../../models/forum/ForumMembership.js";
+import ForumBan from "../../models/forum/forumBan.js";
+import ForumMembership from "../../models/forum/forumMembership.js";
 import { ROLES } from "../../utils/constants.js";
 
 const createAnswer = async (userId, postId, content) => {

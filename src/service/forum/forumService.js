@@ -1,6 +1,6 @@
-import Forum from "../../models/forum/Forum.js";
-import ForumMembership from "../../models/forum/ForumMembership.js";
-import ForumBan from "../../models/forum/ForumBan.js";
+import Forum from "../../models/forum/forum.js";
+import ForumMembership from "../../models/forum/forumMembership.js";
+import ForumBan from "../../models/forum/forumBan.js";
 import { ROLES } from "../../utils/constants.js";
 
 // Only admin or content contributor can create a forum
