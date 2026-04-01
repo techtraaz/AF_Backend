@@ -11,6 +11,9 @@ router.post("/", authenticate, authorizeRoles(ROLES.ADMIN, ROLES.CONTENT_CONTRIB
 // Get all courses with optional filters
 router.get("/", authenticate, courseController.getAllCourses);
 
+// Get global course statistics
+router.get("/statistics/global", authenticate, authorizeRoles(ROLES.ADMIN), courseController.getGlobalCourseStatistics);
+
 // Get courses by creator
 router.get("/creator/:creatorId", authenticate, courseController.getCoursesByCreator);
 

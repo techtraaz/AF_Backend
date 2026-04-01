@@ -11,16 +11,22 @@ const courseSchema = new mongoose.Schema(
             type: String,
             required: true
         },
+        languageId: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "Language",
+            required: false 
+        },
+        levelId: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "CourseLevel",
+            required: false 
+        },
         language: {
             type: String,
-            enum: ["English"],
-            default: "English",
-            required: true
+            default: "English"
         },
         level: {
-            type: String,
-            enum: ["Beginner", "Intermediate", "Advanced"],
-            required: true
+            type: String
         },
         createdById: {
             type: mongoose.Schema.Types.ObjectId,
@@ -53,6 +59,7 @@ const courseSchema = new mongoose.Schema(
 // Indexes for better query performance
 courseSchema.index({ categoryId: 1, isPublished: 1 });
 courseSchema.index({ createdById: 1 });
-courseSchema.index({ level: 1, language: 1, isPublished: 1 });
+courseSchema.index({ levelId: 1, languageId: 1, isPublished: 1 });
+courseSchema.index({ level: 1, language: 1, isPublished: 1 }); // Legacy index
 
 export default mongoose.model("Course", courseSchema);

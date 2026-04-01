@@ -14,7 +14,9 @@ const getAllCourses = async (req, res) => {
         const filters = {
             categoryId: req.query.categoryId,
             level: req.query.level,
+            levelId: req.query.levelId,
             language: req.query.language,
+            languageId: req.query.languageId,
             createdById: req.query.createdById,
             isPublished: req.query.isPublished
         };
@@ -88,6 +90,15 @@ const getCourseStatistics = async (req, res) => {
     }
 };
 
+const getGlobalCourseStatistics = async (req, res) => {
+    try {
+        const statistics = await courseService.getGlobalCourseStatistics();
+        return res.success("Global course statistics retrieved successfully", statistics);
+    } catch (error) {
+        return res.error(error.message);
+    }
+};
+
 export {
     createCourse,
     getAllCourses,
@@ -97,5 +108,6 @@ export {
     publishCourse,
     unpublishCourse,
     getCoursesByCreator,
-    getCourseStatistics
+    getCourseStatistics,
+    getGlobalCourseStatistics
 };
