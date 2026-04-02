@@ -24,11 +24,13 @@ const createCourse = async (courseData) => {
         throw new Error("Course description must be at least 10 characters long");
     }
 
-    if (!courseData.level) {
-        throw new Error("Course level is required");
+    // Support both new (levelId) and legacy (level) fields
+    if (!courseData.levelId && !courseData.level) {
+        throw new Error("Course level is required (provide levelId or level)");
     }
 
-    if (!['Beginner', 'Intermediate', 'Advanced'].includes(courseData.level)) {
+    // Validate legacy level if provided
+    if (courseData.level && !['Beginner', 'Intermediate', 'Advanced'].includes(courseData.level)) {
         throw new Error("Course level must be Beginner, Intermediate, or Advanced");
     }
 
@@ -57,9 +59,27 @@ const createCourse = async (courseData) => {
         throw new Error("Category not found");
     }
 
-    // Validate language
+    // Validate languageId if provided (new field)
+    if (courseData.languageId) {
+        const Language = (await import('../../models/language.js')).default;
+        const language = await Language.findById(courseData.languageId);
+        if (!language || !language.isActive) {
+            throw new Error("Invalid or inactive language selected");
+        }
+    }
+
+    // Validate levelId if provided (new field)
+    if (courseData.levelId) {
+        const CourseLevel = (await import('../../models/courseLevel.js')).default;
+        const level = await CourseLevel.findById(courseData.levelId);
+        if (!level || !level.isActive) {
+            throw new Error("Invalid or inactive course level selected");
+        }
+    }
+
+    // Validate legacy language
     if (courseData.language && courseData.language !== 'English') {
-        throw new Error("Currently only English language is supported");
+        throw new Error("Currently only English language is supported for legacy field");
     }
 
     // Check for duplicate course title by same creator
@@ -73,6 +93,15 @@ const createCourse = async (courseData) => {
     }
 
     const course = await Course.create(courseData);
+    
+    // Populate the references before returning
+    await course.populate([
+        { path: 'createdById', select: 'email role' },
+        { path: 'categoryId', select: 'name slug description' },
+        { path: 'languageId', select: 'name code' },
+        { path: 'levelId', select: 'name displayOrder' }
+    ]);
+    
     return course;
 };
 
@@ -87,7 +116,13 @@ const getAllCourses = async (filters = {}) => {
         query.categoryId = filters.categoryId;
     }
 
-    if (filters.level) {
+    // Support both levelId (new) and level (legacy) filters
+    if (filters.levelId) {
+        if (!/^[0-9a-fA-F]{24}$/.test(filters.levelId)) {
+            throw new Error("Invalid level ID format");
+        }
+        query.levelId = filters.levelId;
+    } else if (filters.level) {
         // Validate level value
         if (!['Beginner', 'Intermediate', 'Advanced'].includes(filters.level)) {
             throw new Error("Invalid level. Must be Beginner, Intermediate, or Advanced");
@@ -95,7 +130,13 @@ const getAllCourses = async (filters = {}) => {
         query.level = filters.level;
     }
 
-    if (filters.language) {
+    // Support both languageId (new) and language (legacy) filters
+    if (filters.languageId) {
+        if (!/^[0-9a-fA-F]{24}$/.test(filters.languageId)) {
+            throw new Error("Invalid language ID format");
+        }
+        query.languageId = filters.languageId;
+    } else if (filters.language) {
         // Validate language value
         if (filters.language !== 'English') {
             throw new Error("Currently only English language is supported");
@@ -125,7 +166,9 @@ const getAllCourses = async (filters = {}) => {
     const courses = await Course.find(query)
         .sort({ createdAt: -1 })
         .populate('createdById', 'email role')
-        .populate('categoryId', 'name slug description');
+        .populate('categoryId', 'name slug description')
+        .populate('languageId', 'name code')
+        .populate('levelId', 'name displayOrder');
     
     return courses;
 };
@@ -138,7 +181,9 @@ const getCourseById = async (courseId) => {
 
     const course = await Course.findById(courseId)
         .populate('createdById', 'email role')
-        .populate('categoryId', 'name slug description icon');
+        .populate('categoryId', 'name slug description icon')
+        .populate('languageId', 'name code')
+        .populate('levelId', 'name displayOrder');
     
     if (!course) {
         throw new Error("Course not found");
@@ -225,7 +270,9 @@ const updateCourse = async (courseId, updateData) => {
         { new: true, runValidators: true }
     )
     .populate('createdById', 'email role')
-    .populate('categoryId', 'name slug description');
+    .populate('categoryId', 'name slug description')
+    .populate('languageId', 'name code')
+    .populate('levelId', 'name displayOrder');
 
     return updatedCourse;
 };
@@ -290,7 +337,9 @@ const publishCourse = async (courseId) => {
         { new: true }
     )
     .populate('createdById', 'email role')
-    .populate('categoryId', 'name slug description');
+    .populate('categoryId', 'name slug description')
+    .populate('languageId', 'name code')
+    .populate('levelId', 'name displayOrder');
 
     return updatedCourse;
 };
@@ -318,7 +367,9 @@ const unpublishCourse = async (courseId) => {
         { new: true }
     )
     .populate('createdById', 'email role')
-    .populate('categoryId', 'name slug description');
+    .populate('categoryId', 'name slug description')
+    .populate('languageId', 'name code')
+    .populate('levelId', 'name displayOrder');
 
     return updatedCourse;
 };
@@ -460,6 +511,45 @@ const getCourseStatistics = async (courseId) => {
     };
 };
 
+/**
+ * Get global course statistics
+ * @returns {Object} Statistics object
+ */
+const getGlobalCourseStatistics = async () => {
+    const [
+        totalCourses,
+        publishedCourses,
+        unpublishedCourses,
+        totalEnrollments,
+        levelStats,
+        languageStats
+    ] = await Promise.all([
+        Course.countDocuments(),
+        Course.countDocuments({ isPublished: true }),
+        Course.countDocuments({ isPublished: false }),
+        Course.aggregate([
+            { $group: { _id: null, total: { $sum: '$totalEnrollments' } } }
+        ]),
+        Course.aggregate([
+            { $group: { _id: '$level', count: { $sum: 1 } } },
+            { $sort: { _id: 1 } }
+        ]),
+        Course.aggregate([
+            { $group: { _id: '$language', count: { $sum: 1 } } },
+            { $sort: { _id: 1 } }
+        ])
+    ]);
+
+    return {
+        totalCourses,
+        publishedCourses,
+        unpublishedCourses,
+        totalEnrollments: totalEnrollments.length > 0 ? totalEnrollments[0].total : 0,
+        byLevel: levelStats,
+        byLanguage: languageStats
+    };
+};
+
 export {
     createCourse,
     getAllCourses,
@@ -473,5 +563,6 @@ export {
     incrementTotalEnrollments,
     decrementTotalEnrollments,
     getCoursesByCreator,
-    getCourseStatistics
+    getCourseStatistics,
+    getGlobalCourseStatistics
 };

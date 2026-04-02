@@ -10,6 +10,8 @@ import authRoutes from "./routes/authRoutes.js";
 import adminRoutes from "./routes/adminRoute.js";
 import quizRoutes from "./routes/quiz/quizIndex.js";
 import courseRoutes from "./routes/course/courseRoutes.js";
+import courseLevelRoutes from "./routes/course/courseLevelRoute.js";
+import languageRoutes from "./routes/course/languageRoute.js";
 import profileRoutes from "./routes/profileRoutes.js";
 import categoryRoutes from "./routes/lesson/categoryRoutes.js";
 import lessonRoutes from "./routes/lesson/lessonRoutes.js";
@@ -34,6 +36,8 @@ app.use("/api/profile", profileRoutes);
 app.use("/api/admin", adminRoutes);
 app.use("/api/quiz", quizRoutes);
 app.use("/api/course", courseRoutes);
+app.use("/api/course-level", courseLevelRoutes);
+app.use("/api/language", languageRoutes);
 
 app.use("/api/categories", categoryRoutes);
 app.use("/api/lessons", lessonRoutes);

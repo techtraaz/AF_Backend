@@ -1,6 +1,7 @@
 import Quiz from "../../models/quiz/Quiz.js";
 import Question from "../../models/quiz/Question.js";
 import Option from "../../models/quiz/Option.js";
+import QuizAttempt from "../../models/quiz/QuizAttempt.js";
 
 const createQuiz = async (quizData) => {
     // Validate that courseId or lessonId is provided

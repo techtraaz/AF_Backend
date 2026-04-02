@@ -1088,12 +1088,29 @@
  *           type: string
  *           example: A comprehensive course for absolute beginners
  *         language:
- *           type: string
- *           example: English
+ *           type: object
+ *           properties:
+ *             _id:
+ *               type: string
+ *               example: 64f1c2e4a12b3456789abc01
+ *             name:
+ *               type: string
+ *               example: English
+ *             code:
+ *               type: string
+ *               example: en
  *         level:
- *           type: string
- *           enum: [Beginner, Intermediate, Advanced]
- *           example: Beginner
+ *           type: object
+ *           properties:
+ *             _id:
+ *               type: string
+ *               example: 64f1c2e4a12b3456789abc02
+ *             name:
+ *               type: string
+ *               example: Beginner
+ *             displayOrder:
+ *               type: number
+ *               example: 1
  *         createdById:
  *           type: string
  *           example: 64f1c2e4a12b3456789abcdf
@@ -1121,7 +1138,7 @@
  *       required:
  *         - title
  *         - description
- *         - level
+ *         - levelId
  *         - createdById
  *         - categoryId
  *       properties:
@@ -1131,13 +1148,12 @@
  *         description:
  *           type: string
  *           example: A comprehensive course designed for absolute beginners to learn English
- *         language:
+ *         languageId:
  *           type: string
- *           example: English
- *         level:
+ *           example: 64f1c2e4a12b3456789abc01
+ *         levelId:
  *           type: string
- *           enum: [Beginner, Intermediate, Advanced]
- *           example: Beginner
+ *           example: 64f1c2e4a12b3456789abc02
  *         createdById:
  *           type: string
  *           example: 64f1c2e4a12b3456789abcde
@@ -1154,10 +1170,12 @@
  *         description:
  *           type: string
  *           example: Updated comprehensive course with new multimedia content
- *         level:
+ *         levelId:
  *           type: string
- *           enum: [Beginner, Intermediate, Advanced]
- *           example: Intermediate
+ *           example: 64f1c2e4a12b3456789abc02
+ *         languageId:
+ *           type: string
+ *           example: 64f1c2e4a12b3456789abc01
  *
  *     CourseResponse:
  *       type: object
@@ -1201,6 +1219,205 @@
  *           example: Course statistics retrieved successfully
  *         content:
  *           $ref: '#/components/schemas/CourseStatistics'
+ *
+ *     GlobalCourseStatistics:
+ *       type: object
+ *       properties:
+ *         totalCourses:
+ *           type: number
+ *           example: 25
+ *         publishedCourses:
+ *           type: number
+ *           example: 18
+ *         unpublishedCourses:
+ *           type: number
+ *           example: 7
+ *         totalEnrollments:
+ *           type: number
+ *           example: 5230
+ *         averageLessonsPerCourse:
+ *           type: number
+ *           format: double
+ *           example: 12.5
+ *         coursesByLevel:
+ *           type: object
+ *           properties:
+ *             Beginner:
+ *               type: number
+ *               example: 10
+ *             Intermediate:
+ *               type: number
+ *               example: 8
+ *             Advanced:
+ *               type: number
+ *               example: 7
+ *         topLanguages:
+ *           type: array
+ *           items:
+ *             type: object
+ *             properties:
+ *               language:
+ *                 type: string
+ *                 example: English
+ *               count:
+ *                 type: number
+ *                 example: 15
+ *
+ *     GlobalCourseStatisticsResponse:
+ *       type: object
+ *       properties:
+ *         code:
+ *           type: number
+ *           example: 200
+ *         message:
+ *           type: string
+ *           example: Global course statistics retrieved successfully
+ *         content:
+ *           $ref: '#/components/schemas/GlobalCourseStatistics'
+ *
+ *  # ============ COURSE LEVEL SCHEMAS ============
+ *
+ *     CourseLevel:
+ *       type: object
+ *       properties:
+ *         _id:
+ *           type: string
+ *           example: 64f1c2e4a12b3456789abcde
+ *         name:
+ *           type: string
+ *           example: Beginner
+ *         displayOrder:
+ *           type: number
+ *           example: 1
+ *         isActive:
+ *           type: boolean
+ *           example: true
+ *         createdAt:
+ *           type: string
+ *           format: date-time
+ *           example: 2026-02-22T10:00:00.000Z
+ *         updatedAt:
+ *           type: string
+ *           format: date-time
+ *           example: 2026-02-22T10:00:00.000Z
+ *
+ *     CreateCourseLevelRequest:
+ *       type: object
+ *       required:
+ *         - name
+ *         - displayOrder
+ *       properties:
+ *         name:
+ *           type: string
+ *           example: Intermediate
+ *         displayOrder:
+ *           type: number
+ *           example: 2
+ *         isActive:
+ *           type: boolean
+ *           example: true
+ *
+ *     UpdateCourseLevelRequest:
+ *       type: object
+ *       properties:
+ *         name:
+ *           type: string
+ *           example: Intermediate Updated
+ *         displayOrder:
+ *           type: number
+ *           example: 2
+ *         isActive:
+ *           type: boolean
+ *           example: false
+ *
+ *     CourseLevelResponse:
+ *       type: object
+ *       properties:
+ *         code:
+ *           type: number
+ *           example: 201
+ *         message:
+ *           type: string
+ *           example: Course level created successfully
+ *         content:
+ *           $ref: '#/components/schemas/CourseLevel'
+ *
+ *  # ============ LANGUAGE SCHEMAS ============
+ *
+ *     Language:
+ *       type: object
+ *       properties:
+ *         _id:
+ *           type: string
+ *           example: 64f1c2e4a12b3456789abcde
+ *         name:
+ *           type: string
+ *           example: English
+ *         code:
+ *           type: string
+ *           example: en
+ *         nativeName:
+ *           type: string
+ *           example: English
+ *         isActive:
+ *           type: boolean
+ *           example: true
+ *         createdAt:
+ *           type: string
+ *           format: date-time
+ *           example: 2026-02-22T10:00:00.000Z
+ *         updatedAt:
+ *           type: string
+ *           format: date-time
+ *           example: 2026-02-22T10:00:00.000Z
+ *
+ *     CreateLanguageRequest:
+ *       type: object
+ *       required:
+ *         - name
+ *         - code
+ *         - nativeName
+ *       properties:
+ *         name:
+ *           type: string
+ *           example: Spanish
+ *         code:
+ *           type: string
+ *           example: es
+ *         nativeName:
+ *           type: string
+ *           example: Español
+ *         isActive:
+ *           type: boolean
+ *           example: true
+ *
+ *     UpdateLanguageRequest:
+ *       type: object
+ *       properties:
+ *         name:
+ *           type: string
+ *           example: French
+ *         code:
+ *           type: string
+ *           example: fr
+ *         nativeName:
+ *           type: string
+ *           example: Français
+ *         isActive:
+ *           type: boolean
+ *           example: false
+ *
+ *     LanguageResponse:
+ *       type: object
+ *       properties:
+ *         code:
+ *           type: number
+ *           example: 201
+ *         message:
+ *           type: string
+ *           example: Language created successfully
+ *         content:
+ *           $ref: '#/components/schemas/Language'
  * 
  *  # ============ FORUM SCHEMAS ============
  *
