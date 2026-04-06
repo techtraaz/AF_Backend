@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 import Enrollment from "../../models/course/Enrollment.js";
 import Course from "../../models/course/Course.js";
-import User from "../../models/auth/User.js";
+import User from "../../models/auth/user.js";
 import { ROLES } from "../../utils/constants.js";
 import * as courseService from "./courseService.js";
 
