@@ -12,7 +12,7 @@ const createLesson = async (req, res) => {
 
 const getAllLessons = async (req, res) => {
     try {
-        const lessons = await lessonService.getAllLessons(req.query.categoryId);
+        const lessons = await lessonService.getAllLessons(req.query.categoryId, req.query.courseId);
         return res.success("Lessons fetched successfully", lessons);
     } catch (error) {
         return res.error(error.message);

@@ -12,6 +12,7 @@ import quizRoutes from "./routes/quiz/quizIndex.js";
 import courseRoutes from "./routes/course/courseRoutes.js";
 import courseLevelRoutes from "./routes/course/courseLevelRoute.js";
 import languageRoutes from "./routes/course/languageRoute.js";
+import enrollmentRoutes from "./routes/course/enrollmentRoutes.js";
 import profileRoutes from "./routes/profileRoutes.js";
 import categoryRoutes from "./routes/lesson/categoryRoutes.js";
 import lessonRoutes from "./routes/lesson/lessonRoutes.js";
@@ -38,6 +39,7 @@ app.use("/api/quiz", quizRoutes);
 app.use("/api/course", courseRoutes);
 app.use("/api/course-level", courseLevelRoutes);
 app.use("/api/language", languageRoutes);
+app.use("/api/enrollments", enrollmentRoutes);
 
 app.use("/api/categories", categoryRoutes);
 app.use("/api/lessons", lessonRoutes);
