@@ -1,5 +1,6 @@
 import Option from "../../models/quiz/Option.js";
 import Question from "../../models/quiz/Question.js";
+import Quiz from "../../models/quiz/Quiz.js";
 
 const createOption = async (optionData) => {
     // Verify question exists

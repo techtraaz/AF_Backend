@@ -30,16 +30,26 @@ const quizSchema = new mongoose.Schema(
             max: 100,
             default: 60
         },
-        timeLimitMinutes: {
+        timeLimit: {
             type: Number,
             required: false,
-            min: 1
+            min: 0,
+            default: null
         },
         maxAttempts: {
             type: Number,
             required: false,
             min: 1,
-            default: 3
+            default: null
+        },
+        instructions: {
+            type: String,
+            required: false,
+            trim: true
+        },
+        isRandomOrder: {
+            type: Boolean,
+            default: false
         },
         isPublished: {
             type: Boolean,
