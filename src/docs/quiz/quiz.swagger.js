@@ -187,7 +187,7 @@
  *   patch:
  *     summary: Publish quiz
  *     tags: [Quiz - Quizzes]
- *     description: Publish a quiz (requires at least one question) (Requires Admin authentication)
+ *     description: Publish a quiz (requires at least one question) (Requires Admin or Content Contributor authentication)
  *     security:
  *       - bearerAuth: []
  *     parameters:
@@ -206,7 +206,7 @@
  *       401:
  *         description: Unauthorized - Invalid or missing token
  *       403:
- *         description: Forbidden - Admin access required
+ *         description: Forbidden - Admin or Content Contributor access required
  *       404:
  *         description: Quiz not found
  */
@@ -217,7 +217,7 @@
  *   patch:
  *     summary: Unpublish quiz
  *     tags: [Quiz - Quizzes]
- *     description: Unpublish a quiz (Requires Admin authentication)
+ *     description: Unpublish a quiz (Requires Admin or Content Contributor authentication)
  *     security:
  *       - bearerAuth: []
  *     parameters:

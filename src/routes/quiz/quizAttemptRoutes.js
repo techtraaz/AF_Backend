@@ -8,13 +8,13 @@ const router = express.Router();
 // Submit quiz attempt
 router.post("/", authenticate, quizAttemptController.submitQuizAttempt);
 
-// Get attempt by ID with responses
-router.get("/:id", authenticate, quizAttemptController.getAttemptById);
+// Get quiz statistics (MUST be before /:id route to avoid conflicts)
+router.get("/quiz/:quizId/statistics", authenticate, authorizeRoles(ROLES.ADMIN, ROLES.CONTENT_CONTRIBUTOR), quizAttemptController.getQuizStatistics);
 
 // Get all attempts for a user (optionally filtered by quizId)
 router.get("/user/:refugeeId", authenticate, quizAttemptController.getUserQuizAttempts);
 
-// Get quiz statistics
-router.get("/quiz/:quizId/statistics", authenticate, authorizeRoles(ROLES.ADMIN, ROLES.CONTENT_CONTRIBUTOR), quizAttemptController.getQuizStatistics);
+// Get attempt by ID with responses (generic route - MUST be last)
+router.get("/:id", authenticate, quizAttemptController.getAttemptById);
 
 export default router;
