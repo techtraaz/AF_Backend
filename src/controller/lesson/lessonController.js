@@ -55,4 +55,13 @@ const publishLesson = async (req, res) => {
     }
 };
 
-export { createLesson , getAllLessons , getLessonById , updateLesson , deleteLesson , publishLesson}
+const unpublishLesson = async (req, res) => {
+    try {
+        const lesson = await lessonService.unpublishLesson(req.params.id);
+        return res.success("Lesson unpublished successfully", lesson);
+    } catch (error) {
+        return res.badRequest(error.message);
+    }
+};
+
+export { createLesson , getAllLessons , getLessonById , updateLesson , deleteLesson , publishLesson, unpublishLesson }

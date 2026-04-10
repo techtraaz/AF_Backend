@@ -14,6 +14,7 @@ router.get("/:id", lessonController.getLessonById);
 router.put("/:id",authenticate,authorizeContentContributor, lessonController.updateLesson);
 router.delete("/:id",authenticate,authorizeContentContributor, lessonController.deleteLesson);
 router.patch("/:id/publish", authenticate,authorizeContentContributor,lessonController.publishLesson);
+router.patch("/:id/unpublish", authenticate,authorizeContentContributor,lessonController.unpublishLesson);
 
 
 router.use("/:lessonId/reading", readingRoutes);

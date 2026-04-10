@@ -23,5 +23,5 @@ const lessonSchema = new mongoose.Schema({
 lessonSchema.index({ courseId: 1 })
 lessonSchema.index({ courseId: 1, isPublished: 1 })
 
-
-export default mongoose.model("Lesson", lessonSchema);
+// Prevent model overwrite error in ES modules
+export default mongoose.models.Lesson || mongoose.model("Lesson", lessonSchema);

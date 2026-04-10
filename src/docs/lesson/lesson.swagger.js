@@ -130,3 +130,22 @@
  *       400:
  *         description: Missing required sections
  */
+
+/**
+ * @swagger
+ * /api/lessons/{id}/unpublish:
+ *   patch:
+ *     summary: Unpublish lesson
+ *     tags: [Lessons]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Lesson unpublished successfully
+ *       404:
+ *         description: Lesson not found
+ */
