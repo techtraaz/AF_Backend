@@ -59,4 +59,46 @@ const authorizeRoles = (...roles) => (req, res, next) => {
     next();
 };
 
-export {authenticate , authorizeAdmin, authorizeRoles, authorizeRefugee, authorizeContentContributor};
+/**
+ * Optional authentication middleware
+ * Extracts user from token if present, but doesn't fail if no token
+ * Used for public routes that need to optionally check authentication
+ */
+const optionalAuthenticate = async (req, res, next) => {
+    const authHeader = req.headers.authorization;
+
+    // If no auth header, continue without user
+    if (!authHeader) {
+        req.user = null;
+        return next();
+    }
+
+    const token = authHeader.split(" ")[1];
+
+    try {
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+        const isBlacklisted = await BlacklistedToken.findOne({ token });
+        if (isBlacklisted) {
+            // Token is blacklisted, continue without user
+            req.user = null;
+            return next();
+        }
+
+        const user = await User.findById(decoded.id);
+        if (!user || user.status !== ACCOUNT_STATUSES.ACTIVE) {
+            // Invalid user, continue without user
+            req.user = null;
+            return next();
+        }
+
+        req.user = user;
+        next();
+    } catch (error) {
+        // Invalid token, continue without user
+        req.user = null;
+        next();
+    }
+};
+
+export {authenticate, optionalAuthenticate, authorizeAdmin, authorizeRoles, authorizeRefugee, authorizeContentContributor};
