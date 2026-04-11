@@ -1,10 +1,23 @@
 import * as authService from "../service/authService.js";
 import { ROLES } from "../utils/constants.js";
+import jwt from "jsonwebtoken";
+
+const generateToken = (user) => {
+    return jwt.sign(
+        {
+            id: user._id,
+            role: user.role
+        },
+        process.env.JWT_SECRET,
+        { expiresIn: "1h" }
+    );
+};
 
 const signupRefugee = async (req, res) => {
     try {
         const user = await authService.signup(req.body, ROLES.REFUGEE);
-        return res.created("Refugee registered successfully", user);
+        const token = generateToken(user);
+        return res.created("Refugee registered successfully", { user, token });
     } catch (error) {
         return res.badRequest(error.message);
     }
