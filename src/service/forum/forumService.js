@@ -58,6 +58,10 @@ const joinForum = async (userId, forumId) => {
     const ban = await ForumBan.findOne({ forumId, userId, isActive: true });
     if (ban) throw new Error("You are banned from this forum");
 
+    // Check if user is already a member
+    const existingMembership = await ForumMembership.findOne({ forumId, userId });
+    if (existingMembership) throw new Error("You are already a member of this forum");
+
     const membership = await ForumMembership.create({ forumId, userId });
     return membership;
 };
@@ -175,7 +179,7 @@ const getBannedUsersPaginated = async (requesterId, requesterRole, forumId, page
 // Get forums a user has joined with pagination - can retrieve own forums or admin can retrieve others
 const getUserForumsPaginated = async (userId, requesterId, requesterRole, page = 1, limit = 10) => {
     // Authorization: users can only see their own forums unless requester is admin
-    if (userId !== requesterId.toString() && requesterRole !== ROLES.ADMIN) {
+    if (userId.toString() !== requesterId.toString() && requesterRole !== ROLES.ADMIN) {
         throw new Error("Unauthorized to view forums for this user");
     }
 

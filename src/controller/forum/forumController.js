@@ -48,6 +48,7 @@ const joinForum = async (req, res) => {
     } catch (error) {
         if (error.message === "Forum not found") return res.notFound(error.message);
         if (error.message === "You are banned from this forum") return res.forbidden(error.message);
+        if (error.message === "You are already a member of this forum") return res.conflict(error.message);
         if (error.code === 11000) return res.conflict("You are already a member of this forum");
         return res.error(error.message);
     }
