@@ -1,7 +1,17 @@
 import Forum from "../../models/forum/forum.js";
 import ForumMembership from "../../models/forum/forumMembership.js";
 import ForumBan from "../../models/forum/forumBan.js";
+import Post from "../../models/forum/post.js";
 import { ROLES } from "../../utils/constants.js";
+
+// Helper: Get member and post counts for a forum
+const getForumCounts = async (forumId) => {
+    const [memberCount, postCount] = await Promise.all([
+        ForumMembership.countDocuments({ forumId }),
+        Post.countDocuments({ forumId, isDeleted: false })
+    ]);
+    return { memberCount, postCount };
+};
 
 // Only admin or content contributor can create a forum
 const createForum = async (userId, role, data) => {
@@ -20,7 +30,11 @@ const createForum = async (userId, role, data) => {
 
 // Get all active forums
 const getAllForums = async () => {
-    return await Forum.find({ isActive: true }).populate("createdBy", "email role");
+    const forums = await Forum.find({ isActive: true }).populate("createdBy", "email role");
+    return await Promise.all(forums.map(async (forum) => {
+        const { memberCount, postCount } = await getForumCounts(forum._id);
+        return { ...forum.toObject(), memberCount, postCount };
+    }));
 };
 
 // Get a single forum by ID
@@ -29,7 +43,8 @@ const getForumById = async (forumId) => {
     if (!forum || !forum.isActive) {
         throw new Error("Forum not found");
     }
-    return forum;
+    const { memberCount, postCount } = await getForumCounts(forumId);
+    return { ...forum.toObject(), memberCount, postCount };
 };
 
 // Update forum - only creator, admin or content contributor
@@ -197,13 +212,14 @@ const getUserForumsPaginated = async (userId, requesterId, requesterRole, page =
     // Filter out nulls from match
     const filteredForums = userForums.filter(fm => fm.forumId !== null);
 
-    // Get member counts for each forum
+    // Get member and post counts for each forum
     const forumsWithCounts = await Promise.all(
         filteredForums.map(async (fm) => {
-            const memberCount = await ForumMembership.countDocuments({ forumId: fm.forumId._id });
+            const { memberCount, postCount } = await getForumCounts(fm.forumId._id);
             return {
                 ...fm.toObject(),
-                memberCount
+                memberCount,
+                postCount
             };
         })
     );

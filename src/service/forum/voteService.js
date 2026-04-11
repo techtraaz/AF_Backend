@@ -1,6 +1,6 @@
-import Vote from "../../models/forum/Vote.js";
-import Post from "../../models/forum/Post.js";
-import Answer from "../../models/forum/Answer.js";
+import Vote from "../../models/forum/vote.js";
+import Post from "../../models/forum/post.js";
+import Answer from "../../models/forum/answer.js";
 import ForumBan from "../../models/forum/forumBan.js";
 import ForumMembership from "../../models/forum/forumMembership.js";
 
@@ -39,32 +39,35 @@ const castVote = async (userId, targetId, targetType, voteType) => {
     if (!membership) throw new Error("You must join the forum first");
 
     const TargetModel = TARGET_MODELS[targetType];
-
     const existingVote = await Vote.findOne({ userId, targetId, targetType });
 
+    let actionType = "created";
     if (existingVote) {
         if (existingVote.voteType === voteType) {
-            // Same vote → remove it (toggle off)
             await existingVote.deleteOne();
             await TargetModel.findByIdAndUpdate(targetId, { $inc: { upvoteCount: voteType === "upvote" ? -1 : 1 } });
-            return { message: "Vote removed" };
+            actionType = "removed";
         } else {
-            // Different vote → switch it
             const delta = voteType === "upvote" ? 2 : -2;
             existingVote.voteType = voteType;
             await existingVote.save();
             await TargetModel.findByIdAndUpdate(targetId, { $inc: { upvoteCount: delta } });
-            return { message: "Vote updated", vote: existingVote };
+            actionType = "updated";
         }
+    } else {
+        await Vote.create({ userId, targetId, targetType, voteType });
+        await TargetModel.findByIdAndUpdate(targetId, {
+            $inc: { upvoteCount: voteType === "upvote" ? 1 : -1 }
+        });
     }
 
-    // New vote
-    const vote = await Vote.create({ userId, targetId, targetType, voteType });
-    await TargetModel.findByIdAndUpdate(targetId, {
-        $inc: { upvoteCount: voteType === "upvote" ? 1 : -1 }
-    });
-
-    return { message: "Vote cast", vote };
+    // Fetch updated target with new vote count
+    const updatedTarget = await TargetModel.findById(targetId);
+    
+    // Add context data
+    const result = { ...updatedTarget.toObject(), forumId, actionType };
+    if (targetType === "Answer") result.postId = updatedTarget.postId;
+    return result;
 };
 
 export { castVote };

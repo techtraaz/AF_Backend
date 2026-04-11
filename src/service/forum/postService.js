@@ -1,4 +1,4 @@
-import Post from "../../models/forum/Post.js";
+import Post from "../../models/forum/post.js";
 import ForumMembership from "../../models/forum/forumMembership.js";
 import ForumBan from "../../models/forum/forumBan.js";
 import Forum from "../../models/forum/forum.js";

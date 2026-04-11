@@ -1,5 +1,5 @@
-import Answer from "../../models/forum/Answer.js";
-import Post from "../../models/forum/Post.js";
+import Answer from "../../models/forum/answer.js";
+import Post from "../../models/forum/post.js";
 import ForumBan from "../../models/forum/forumBan.js";
 import ForumMembership from "../../models/forum/forumMembership.js";
 import { ROLES } from "../../utils/constants.js";
@@ -16,20 +16,21 @@ const createAnswer = async (userId, postId, content) => {
     if (!membership) throw new Error("You must join the forum first");
 
     const answer = await Answer.create({ postId, authorId: userId, content });
-
-    // Increment post answerCount
     await Post.findByIdAndUpdate(postId, { $inc: { answerCount: 1 } });
 
-    return answer;
+    return { ...answer.toObject(), postId, forumId: post.forumId };
 };
 
 const getAnswersByPost = async (postId) => {
     const post = await Post.findOne({ _id: postId, isDeleted: false });
     if (!post) throw new Error("Post not found");
 
-    return await Answer.find({ postId, isDeleted: false })
+    const answers = await Answer.find({ postId, isDeleted: false })
         .populate("authorId", "email role")
         .sort({ isAccepted: -1, upvoteCount: -1, createdAt: -1 });
+
+    // Add postId and forumId to each answer
+    return answers.map(answer => ({ ...answer.toObject(), postId, forumId: post.forumId }));
 };
 
 const updateAnswer = async (userId, answerId, content) => {
