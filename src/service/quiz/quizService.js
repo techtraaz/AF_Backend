@@ -1,6 +1,7 @@
 import Quiz from "../../models/quiz/Quiz.js";
 import Question from "../../models/quiz/Question.js";
 import Option from "../../models/quiz/Option.js";
+import QuizAttempt from "../../models/quiz/QuizAttempt.js";
 
 const createQuiz = async (quizData) => {
     // Validate that courseId or lessonId is provided
@@ -13,8 +14,8 @@ const createQuiz = async (quizData) => {
         throw new Error("Passing score must be between 0 and 100");
     }
 
-    // Validate timeLimitMinutes
-    if (quizData.timeLimitMinutes && quizData.timeLimitMinutes <= 0) {
+    // Validate timeLimit
+    if (quizData.timeLimit && quizData.timeLimit <= 0) {
         throw new Error("Time limit must be greater than 0");
     }
 
@@ -80,8 +81,8 @@ const updateQuiz = async (quizId, updateData) => {
         throw new Error("Passing score must be between 0 and 100");
     }
 
-    // Validate timeLimitMinutes if provided
-    if (updateData.timeLimitMinutes !== undefined && updateData.timeLimitMinutes <= 0) {
+    // Validate timeLimit if provided
+    if (updateData.timeLimit !== undefined && updateData.timeLimit <= 0) {
         throw new Error("Time limit must be greater than 0");
     }
 

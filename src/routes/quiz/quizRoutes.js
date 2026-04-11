@@ -21,9 +21,9 @@ router.put("/:id", authenticate, authorizeRoles(ROLES.ADMIN, ROLES.CONTENT_CONTR
 router.delete("/:id", authenticate, authorizeRoles(ROLES.ADMIN, ROLES.CONTENT_CONTRIBUTOR), quizController.deleteQuiz);
 
 // Publish quiz
-router.patch("/:id/publish", authenticate, authorizeRoles(ROLES.ADMIN), quizController.publishQuiz);
+router.patch("/:id/publish", authenticate, authorizeRoles(ROLES.ADMIN, ROLES.CONTENT_CONTRIBUTOR), quizController.publishQuiz);
 
 // Unpublish quiz
-router.patch("/:id/unpublish", authenticate, authorizeRoles(ROLES.ADMIN), quizController.unpublishQuiz);
+router.patch("/:id/unpublish", authenticate, authorizeRoles(ROLES.ADMIN, ROLES.CONTENT_CONTRIBUTOR), quizController.unpublishQuiz);
 
 export default router;

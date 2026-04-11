@@ -2,6 +2,7 @@
 import mongoose from "mongoose";
 
 const lessonSchema = new mongoose.Schema({
+    courseId: { type: mongoose.Schema.Types.ObjectId, ref: 'Course', required: true },
     categoryId: { type: mongoose.Schema.Types.ObjectId, ref: 'Category', required: true },
     title: { type: String, required: true },
     description: { type: String },
@@ -18,5 +19,9 @@ const lessonSchema = new mongoose.Schema({
 
 }, { timestamps: true })
 
+// Index for better query performance
+lessonSchema.index({ courseId: 1 })
+lessonSchema.index({ courseId: 1, isPublished: 1 })
 
-export default mongoose.model("Lesson", lessonSchema);
+// Prevent model overwrite error in ES modules
+export default mongoose.models.Lesson || mongoose.model("Lesson", lessonSchema);

@@ -30,10 +30,10 @@ const submitQuizAttempt = async (attemptData) => {
     }
 
     // Validate time limit
-    if (quiz.timeLimitMinutes && timeTakenSeconds) {
-        const timeLimitSeconds = quiz.timeLimitMinutes * 60;
+    if (quiz.timeLimit && timeTakenSeconds) {
+        const timeLimitSeconds = quiz.timeLimit * 60;
         if (timeTakenSeconds > timeLimitSeconds) {
-            throw new Error(`Time limit exceeded. Maximum time allowed: ${quiz.timeLimitMinutes} minutes`);
+            throw new Error(`Time limit exceeded. Maximum time allowed: ${quiz.timeLimit} minutes`);
         }
     }
 

@@ -52,18 +52,17 @@
  *         description: Filter by category ID
  *         example: 64f1c2e4a12b3456789abcde
  *       - in: query
- *         name: level
+ *         name: levelId
  *         schema:
  *           type: string
- *           enum: [Beginner, Intermediate, Advanced]
- *         description: Filter by difficulty level
- *         example: Beginner
+ *         description: Filter by difficulty level ID
+ *         example: 64f1c2e4a12b3456789abcdf
  *       - in: query
- *         name: language
+ *         name: languageId
  *         schema:
  *           type: string
- *         description: Filter by language
- *         example: English
+ *         description: Filter by language ID
+ *         example: 64f1c2e4a12b3456789abce0
  *       - in: query
  *         name: createdById
  *         schema:
@@ -96,6 +95,28 @@
  *                     $ref: '#/components/schemas/Course'
  *       401:
  *         description: Unauthorized - Invalid or missing token
+ */
+
+/**
+ * @swagger
+ * /api/course/statistics/global:
+ *   get:
+ *     summary: Get global course statistics
+ *     tags: [Course]
+ *     description: Retrieve aggregated statistics for all courses (Admin only)
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Global course statistics retrieved successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/GlobalCourseStatisticsResponse'
+ *       401:
+ *         description: Unauthorized - Invalid or missing token
+ *       403:
+ *         description: Forbidden - Admin access required
  */
 
 /**
