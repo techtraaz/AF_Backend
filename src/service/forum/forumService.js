@@ -214,4 +214,21 @@ const getUserForumsPaginated = async (userId, requesterId, requesterRole, page =
     };
 };
 
-export { createForum, getAllForums, getForumById, updateForum, joinForum, leaveForum, banUser, unbanUser, getForumMembersPaginated, getBannedUsersPaginated, getUserForumsPaginated };
+// Delete forum - only creator, admin or content contributor (soft delete)
+const deleteForum = async (userId, role, forumId) => {
+    const forum = await Forum.findById(forumId);
+    if (!forum) throw new Error("Forum not found");
+
+    const isCreator = forum.createdBy.toString() === userId.toString();
+    const isPrivileged = role === ROLES.ADMIN || role === ROLES.CONTENT_CONTRIBUTOR;
+
+    if (!isCreator && !isPrivileged) {
+        throw new Error("Unauthorized to delete this forum");
+    }
+
+    forum.isActive = false;
+    await forum.save();
+    return forum;
+};
+
+export { createForum, getAllForums, getForumById, updateForum, joinForum, leaveForum, banUser, unbanUser, getForumMembersPaginated, getBannedUsersPaginated, getUserForumsPaginated, deleteForum };

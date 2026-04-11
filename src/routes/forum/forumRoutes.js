@@ -1,7 +1,7 @@
 import express from "express";
 import {
     createForum, getAllForums, getForumById,
-    updateForum, joinForum, leaveForum, banUser, unbanUser, getForumMembers, getBannedUsers, getUserForums
+    updateForum, joinForum, leaveForum, banUser, unbanUser, getForumMembers, getBannedUsers, getUserForums, deleteForum
 } from "../../controller/forum/forumController.js";
 import { authenticate, authorizeRoles, authorizeAdmin, authorizeContentContributor } from "../../middleware/authMiddleware.js";
 import { ROLES } from "../../utils/constants.js";
@@ -45,6 +45,14 @@ router.patch(
     authenticate, 
     authorizeRoles(ROLES.ADMIN, ROLES.CONTENT_CONTRIBUTOR),
     updateForum
+);
+
+// Admin or contributor only - delete forum
+router.delete(
+    "/:forumId", 
+    authenticate, 
+    authorizeRoles(ROLES.ADMIN, ROLES.CONTENT_CONTRIBUTOR),
+    deleteForum
 );
 
 // Any authenticated user can join/leave

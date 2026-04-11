@@ -125,4 +125,15 @@ const getUserForums = async (req, res) => {
     }
 };
 
-export { createForum, getAllForums, getForumById, updateForum, joinForum, leaveForum, banUser, unbanUser, getForumMembers, getBannedUsers, getUserForums };
+const deleteForum = async (req, res) => {
+    try {
+        const forum = await forumService.deleteForum(req.user._id, req.user.role, req.params.forumId);
+        return res.success("Forum deleted successfully", forum);
+    } catch (error) {
+        if (error.message === "Forum not found") return res.notFound(error.message);
+        if (error.message === "Unauthorized to delete this forum") return res.forbidden(error.message);
+        return res.error(error.message);
+    }
+};
+
+export { createForum, getAllForums, getForumById, updateForum, joinForum, leaveForum, banUser, unbanUser, getForumMembers, getBannedUsers, getUserForums, deleteForum };
