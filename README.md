@@ -89,10 +89,19 @@ This will start the server on the port specified in your `.env` file (default: `
 ```bash
 npm start
 ```
+---
 
 ## Deployment Guide
 
 - [Deployment Guide](./DEPLOYMENT.md)
+
+---
+
+## Testing Guide
+
+- [Testing Guide](./TESTING.md)
+
+---
 
 ## 📁 Project Structure
 
