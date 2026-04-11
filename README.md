@@ -90,6 +90,10 @@ This will start the server on the port specified in your `.env` file (default: `
 npm start
 ```
 
+## Deployment Guide
+
+- [Deployment Guide](./DEPLOYMENT.md)
+
 ## 📁 Project Structure
 
 ```
