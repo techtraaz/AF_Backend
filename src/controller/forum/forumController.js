@@ -48,6 +48,7 @@ const joinForum = async (req, res) => {
     } catch (error) {
         if (error.message === "Forum not found") return res.notFound(error.message);
         if (error.message === "You are banned from this forum") return res.forbidden(error.message);
+        if (error.message === "You are already a member of this forum") return res.conflict(error.message);
         if (error.code === 11000) return res.conflict("You are already a member of this forum");
         return res.error(error.message);
     }
@@ -88,4 +89,52 @@ const unbanUser = async (req, res) => {
     }
 };
 
-export { createForum, getAllForums, getForumById, updateForum, joinForum, leaveForum, banUser, unbanUser };
+const getForumMembers = async (req, res) => {
+    try {
+        const page = parseInt(req.query.page) || 1;
+        const limit = parseInt(req.query.limit) || 10;
+        const result = await forumService.getForumMembersPaginated(req.params.forumId, page, limit);
+        return res.success("Forum members fetched successfully", result);
+    } catch (error) {
+        if (error.message === "Forum not found") return res.notFound(error.message);
+        return res.error(error.message);
+    }
+};
+
+const getBannedUsers = async (req, res) => {
+    try {
+        const page = parseInt(req.query.page) || 1;
+        const limit = parseInt(req.query.limit) || 10;
+        const result = await forumService.getBannedUsersPaginated(req.user._id, req.user.role, req.params.forumId, page, limit);
+        return res.success("Banned users fetched successfully", result);
+    } catch (error) {
+        if (error.message === "Forum not found") return res.notFound(error.message);
+        if (error.message.startsWith("Unauthorized")) return res.forbidden(error.message);
+        return res.error(error.message);
+    }
+};
+
+const getUserForums = async (req, res) => {
+    try {
+        const page = parseInt(req.query.page) || 1;
+        const limit = parseInt(req.query.limit) || 10;
+        const result = await forumService.getUserForumsPaginated(req.user._id, req.user._id, req.user.role, page, limit);
+        return res.success("User forums fetched successfully", result);
+    } catch (error) {
+        if (error.message.startsWith("Unauthorized")) return res.forbidden(error.message);
+        return res.error(error.message);
+    }
+};
+
+const deleteForum = async (req, res) => {
+    try {
+        const forum = await forumService.deleteForum(req.user._id, req.user.role, req.params.forumId);
+        return res.success("Forum deleted successfully", forum);
+    } catch (error) {
+        if (error.message === "Forum not found") return res.notFound(error.message);
+        if (error.message === "Unauthorized to delete this forum") return res.forbidden(error.message);
+        return res.error(error.message);
+    }
+};
+
+export { createForum, getAllForums, getForumById, updateForum, joinForum, leaveForum, banUser, unbanUser, getForumMembers, getBannedUsers, getUserForums, deleteForum };
