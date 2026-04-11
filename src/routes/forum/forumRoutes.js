@@ -1,7 +1,7 @@
 import express from "express";
 import {
     createForum, getAllForums, getForumById,
-    updateForum, joinForum, leaveForum, banUser, unbanUser
+    updateForum, joinForum, leaveForum, banUser, unbanUser, getForumMembers, getBannedUsers, getUserForums
 } from "../../controller/forum/forumController.js";
 import { authenticate, authorizeRoles, authorizeAdmin, authorizeContentContributor } from "../../middleware/authMiddleware.js";
 import { ROLES } from "../../utils/constants.js";
@@ -17,11 +17,12 @@ router.get(
     getAllForums
 );
 
+// Any authenticated user can view their own forums - MUST BE BEFORE /:forumId
 router.get(
-    "/:forumId", 
+    "/user/forums", 
     authenticate,
-    authorizeRoles(), 
-    getForumById
+    authorizeRoles(),
+    getUserForums
 );
 
 // Only admin or content contributor can create/update
@@ -30,6 +31,13 @@ router.post(
     authenticate, 
     authorizeRoles(ROLES.ADMIN, ROLES.CONTENT_CONTRIBUTOR),
     createForum
+);
+
+router.get(
+    "/:forumId", 
+    authenticate,
+    authorizeRoles(), 
+    getForumById
 );
 
 router.patch(
@@ -67,6 +75,22 @@ router.patch(
     authenticate, 
     authorizeRoles(ROLES.ADMIN, ROLES.CONTENT_CONTRIBUTOR),
     unbanUser
+);
+
+// Public - all authenticated users can view forum members
+router.get(
+    "/:forumId/members", 
+    authenticate,
+    authorizeRoles(),
+    getForumMembers
+);
+
+// Admin or contributor only - view banned users
+router.get(
+    "/:forumId/banned", 
+    authenticate, 
+    authorizeRoles(ROLES.ADMIN, ROLES.CONTENT_CONTRIBUTOR),
+    getBannedUsers
 );
 
 export default router;

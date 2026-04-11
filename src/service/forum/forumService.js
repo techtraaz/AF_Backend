@@ -121,4 +121,97 @@ const unbanUser = async (requesterId, requesterRole, forumId, targetUserId) => {
     return ban;
 };
 
-export { createForum, getAllForums, getForumById, updateForum, joinForum, leaveForum, banUser, unbanUser };
+// Get forum members with pagination - public endpoint
+const getForumMembersPaginated = async (forumId, page = 1, limit = 10) => {
+    const forum = await Forum.findById(forumId);
+    if (!forum || !forum.isActive) throw new Error("Forum not found");
+
+    const skip = (page - 1) * limit;
+    const members = await ForumMembership.find({ forumId })
+        .populate("userId", "email")
+        .sort({ joinedAt: -1 })
+        .skip(skip)
+        .limit(limit);
+
+    const total = await ForumMembership.countDocuments({ forumId });
+
+    return {
+        members,
+        total,
+        page,
+        limit
+    };
+};
+
+// Get banned users for a forum with pagination - restricted endpoint
+const getBannedUsersPaginated = async (requesterId, requesterRole, forumId, page = 1, limit = 10) => {
+    const forum = await Forum.findById(forumId);
+    if (!forum || !forum.isActive) throw new Error("Forum not found");
+
+    const isCreator = forum.createdBy.toString() === requesterId.toString();
+    const isPrivileged = requesterRole === ROLES.ADMIN || requesterRole === ROLES.CONTENT_CONTRIBUTOR;
+
+    if (!isCreator && !isPrivileged) {
+        throw new Error("Unauthorized to view banned users from this forum");
+    }
+
+    const skip = (page - 1) * limit;
+    const banned = await ForumBan.find({ forumId, isActive: true })
+        .populate("userId", "email")
+        .sort({ createdAt: -1 })
+        .skip(skip)
+        .limit(limit);
+
+    const total = await ForumBan.countDocuments({ forumId, isActive: true });
+
+    return {
+        banned,
+        total,
+        page,
+        limit
+    };
+};
+
+// Get forums a user has joined with pagination - can retrieve own forums or admin can retrieve others
+const getUserForumsPaginated = async (userId, requesterId, requesterRole, page = 1, limit = 10) => {
+    // Authorization: users can only see their own forums unless requester is admin
+    if (userId !== requesterId.toString() && requesterRole !== ROLES.ADMIN) {
+        throw new Error("Unauthorized to view forums for this user");
+    }
+
+    const skip = (page - 1) * limit;
+    const userForums = await ForumMembership.find({ userId })
+        .populate({
+            path: "forumId",
+            select: "name description createdBy isActive",
+            match: { isActive: true }
+        })
+        .sort({ joinedAt: -1 })
+        .skip(skip)
+        .limit(limit);
+
+    // Filter out nulls from match
+    const filteredForums = userForums.filter(fm => fm.forumId !== null);
+
+    // Get member counts for each forum
+    const forumsWithCounts = await Promise.all(
+        filteredForums.map(async (fm) => {
+            const memberCount = await ForumMembership.countDocuments({ forumId: fm.forumId._id });
+            return {
+                ...fm.toObject(),
+                memberCount
+            };
+        })
+    );
+
+    const total = await ForumMembership.countDocuments({ userId });
+
+    return {
+        forums: forumsWithCounts,
+        total,
+        page,
+        limit
+    };
+};
+
+export { createForum, getAllForums, getForumById, updateForum, joinForum, leaveForum, banUser, unbanUser, getForumMembersPaginated, getBannedUsersPaginated, getUserForumsPaginated };
