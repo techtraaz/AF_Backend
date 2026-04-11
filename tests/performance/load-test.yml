@@ -1,0 +1,43 @@
+config:
+  target: "http://localhost:5000"
+  phases:
+    - duration: 10
+      arrivalRate: 5
+      name: "Warm up phase"
+    - duration: 20
+      arrivalRate: 5
+      rampTo: 20
+      name: "Ramp up load"
+    - duration: 30
+      arrivalRate: 20
+      name: "Sustained load"
+  environments:
+    dev:
+      target: "http://localhost:5000"
+    prod:
+      target: "https://your-production-url.com"
+
+scenarios:
+  - name: "Browse public APIs (Categories & Lessons)"
+    weight: 7
+    flow:
+      - get:
+          url: "/api/categories"
+          expect:
+            - statusCode: 200
+      - think: 1
+      - get:
+          url: "/api/lessons"
+          expect:
+            - statusCode: 200
+
+  - name: "Unsuccessful Login Attempt"
+    weight: 3
+    flow:
+      - post:
+          url: "/api/auth/login"
+          json:
+            email: "invalid@example.com"
+            password: "wrongpassword"
+          expect:
+            - statusCode: 401
