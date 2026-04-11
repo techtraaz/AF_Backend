@@ -1,5 +1,5 @@
-import Answer from "../../models/forum/Answer.js";
-import Post from "../../models/forum/Post.js";
+import Answer from "../../models/forum/answer.js";
+import Post from "../../models/forum/post.js";
 import ForumBan from "../../models/forum/forumBan.js";
 import ForumMembership from "../../models/forum/forumMembership.js";
 import { ROLES } from "../../utils/constants.js";
