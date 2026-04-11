@@ -1,9 +1,11 @@
 module.exports = {
   testEnvironment: "node",
-  testMatch: ["**/tests/**/*.test.js"],
+  testMatch: ["**/tests/unit/**/*.test.js", "**/tests/integration/**/*.test.js"],
   transform: {
     "^.+\\.js$": "babel-jest",
   },
+  // Integration tests hit real (in-memory) MongoDB — allow extra time
+  testTimeout: 30000,
   collectCoverage: false,
   coverageDirectory: "coverage",
   coverageReporters: ["text", "lcov"],

@@ -6,6 +6,8 @@
   "scripts": {
     "dev": "node server.js",
     "test": "jest --config jest.config.cjs",
+    "test:unit": "jest --config jest.config.cjs --testPathPattern=tests/unit",
+    "test:integration": "jest --config jest.config.cjs --testPathPattern=tests/integration --runInBand",
     "test:coverage": "jest --config jest.config.cjs --coverage"
   },
   "keywords": [],
