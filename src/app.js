@@ -16,6 +16,7 @@ import enrollmentRoutes from "./routes/course/enrollmentRoutes.js";
 import profileRoutes from "./routes/profileRoutes.js";
 import categoryRoutes from "./routes/lesson/categoryRoutes.js";
 import lessonRoutes from "./routes/lesson/lessonRoutes.js";
+import lessonProgressRoutes from "./routes/lesson/lessonProgressRoutes.js";
 import forumRoutes from "./routes/forum/forumRoutes.js";
 import postRoutes from "./routes/forum/postRoutes.js";
 import answerRoutes from "./routes/forum/answerRoutes.js";
@@ -43,6 +44,7 @@ app.use("/api/enrollments", enrollmentRoutes);
 
 app.use("/api/categories", categoryRoutes);
 app.use("/api/lessons", lessonRoutes);
+app.use("/api/lesson-progress", lessonProgressRoutes);
 
 app.use("/api/forums", forumRoutes);
 app.use("/api/forums/:forumId/posts", postRoutes);

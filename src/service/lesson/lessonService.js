@@ -102,6 +102,14 @@ const publishLesson = async (id) => {
   return lesson;
 };
 
+const unpublishLesson = async (id) => {
+  const lesson = await Lesson.findById(id);
+  if (!lesson) throw new Error("Lesson not found");
+  lesson.isPublished = false;
+  await lesson.save();
+  return lesson;
+};
+
 // Helper function to count lessons by course
 const getLessonCountByCourse = async (courseId) => {
   return await Lesson.countDocuments({ courseId });
@@ -124,6 +132,7 @@ export {
   updateLesson,
   deleteLesson,
   publishLesson,
+  unpublishLesson,
   getLessonCountByCourse,
   getLessonsByCourse,
 };
