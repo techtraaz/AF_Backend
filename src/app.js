@@ -24,6 +24,8 @@ import voteRoutes from "./routes/forum/voteRoutes.js";
 
 import contentRoutes from "./routes/content/contentRoutes.js";
 
+import translateRoutes from "./routes/translate/translateRoutes.js"
+
 const app = express();
 
 app.use(cors());
@@ -51,6 +53,8 @@ app.use("/api/forums/:forumId/posts", postRoutes);
 app.use("/api/forums/:forumId/posts/:postId/answers", answerRoutes);
 app.use("/api/votes", voteRoutes);
 app.use("/api/digital-library", contentRoutes);
+
+app.use("/api", translateRoutes);
 
 app.get("/", (req, res) => {
   res.success("Server Up and Running", { status: "ok" });
