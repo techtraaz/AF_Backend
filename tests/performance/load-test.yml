@@ -100,3 +100,82 @@ scenarios:
           url: "/api/quiz/attempts/statistics/{{ quizId }}"
           expect:
             - statusCode: [200, 404]
+
+  - name: "Browse Published Courses"
+    weight: 8
+    flow:
+      - get:
+          url: "/api/course/courses?isPublished=true"
+          expect:
+            - statusCode: [200, 401]
+      - think: 1
+      - get:
+          url: "/api/course/courses"
+          expect:
+            - statusCode: [200, 401]
+
+  - name: "Course Enrollment Flow"
+    weight: 4
+    flow:
+      - post:
+          url: "/api/auth/login"
+          json:
+            email: "refugee@test.com"
+            password: "test123"
+          capture:
+            - json: "$.content.token"
+              as: "authToken"
+      - think: 1
+      - get:
+          url: "/api/course/courses?isPublished=true"
+          headers:
+            Authorization: "Bearer {{ authToken }}"
+          capture:
+            - json: "$.content.courses[0]._id"
+              as: "courseId"
+      - think: 2
+      - post:
+          url: "/api/course/enrollments"
+          headers:
+            Authorization: "Bearer {{ authToken }}"
+          json:
+            courseId: "{{ courseId }}"
+          expect:
+            - statusCode: [201, 400, 401]
+      - think: 1
+      - get:
+          url: "/api/course/enrollments"
+          headers:
+            Authorization: "Bearer {{ authToken }}"
+          expect:
+            - statusCode: [200, 401]
+
+  - name: "Update Course Progress"
+    weight: 3
+    flow:
+      - post:
+          url: "/api/auth/login"
+          json:
+            email: "refugee@test.com"
+            password: "test123"
+          capture:
+            - json: "$.content.token"
+              as: "authToken"
+      - think: 1
+      - get:
+          url: "/api/course/enrollments"
+          headers:
+            Authorization: "Bearer {{ authToken }}"
+          capture:
+            - json: "$.content[0].courseId._id"
+              as: "courseId"
+      - think: 2
+      - patch:
+          url: "/api/course/enrollments/{{ courseId }}/progress"
+          headers:
+            Authorization: "Bearer {{ authToken }}"
+          json:
+            progress: 50
+          expect:
+            - statusCode: [200, 404, 401]
+
