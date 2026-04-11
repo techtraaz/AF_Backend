@@ -4,6 +4,7 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
+    "start": "node server.js",
     "dev": "node server.js",
     "test": "jest --config jest.config.cjs",
     "test:unit": "jest --config jest.config.cjs --testPathPattern=tests/unit",
