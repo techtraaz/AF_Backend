@@ -55,14 +55,28 @@ const getLessonById = async (id) => {
 };
 
 const updateLesson = async (id, data) => {
-  const lesson = await Lesson.findByIdAndUpdate(id, data, { new: true });
+  const lesson = await Lesson.findById(id);
   if (!lesson) throw new Error("Lesson not found");
-  return lesson;
+  
+  // Prevent updating published lessons
+  if (lesson.isPublished) {
+    throw new Error("Cannot update a published lesson. Unpublish it first.");
+  }
+  
+  const updatedLesson = await Lesson.findByIdAndUpdate(id, data, { new: true });
+  return updatedLesson;
 };
 
 const deleteLesson = async (id) => {
-  const lesson = await Lesson.findByIdAndDelete(id);
+  const lesson = await Lesson.findById(id);
   if (!lesson) throw new Error("Lesson not found");
+  
+  // Prevent deleting published lessons
+  if (lesson.isPublished) {
+    throw new Error("Cannot delete a published lesson. Unpublish it first.");
+  }
+  
+  await Lesson.findByIdAndDelete(id);
   
   // Update course's totalLessons count using courseService
   if (lesson.courseId) {

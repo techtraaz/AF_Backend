@@ -23,6 +23,11 @@ const getUserQuizAttempts = async (req, res) => {
         const { refugeeId } = req.params;
         const { quizId } = req.query;
         
+        // Validate that the refugeeId matches the authenticated user's ID
+        if (req.user._id.toString() !== refugeeId) {
+            return res.forbidden("You can only view your own quiz attempts");
+        }
+        
         const attempts = await quizAttemptService.getUserQuizAttempts(refugeeId, quizId);
         return res.success("User attempts retrieved successfully", attempts);
     } catch (error) {
