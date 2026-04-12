@@ -50,17 +50,30 @@ const updateOption = async (optionId, updateData) => {
     // Prevent changing questionId
     delete updateData.questionId;
 
-    const option = await Option.findByIdAndUpdate(
+    const option = await Option.findById(optionId);
+    if (!option) {
+        throw new Error("Option not found");
+    }
+
+    // Get question to check quiz publish status
+    const question = await Question.findById(option.questionId);
+    if (!question) {
+        throw new Error("Associated question not found");
+    }
+
+    // Check if quiz is published
+    const quiz = await Quiz.findById(question.quizId);
+    if (quiz && quiz.isPublished) {
+        throw new Error("Cannot update options in a published quiz. Unpublish it first.");
+    }
+
+    const updatedOption = await Option.findByIdAndUpdate(
         optionId,
         updateData,
         { new: true, runValidators: true }
     );
 
-    if (!option) {
-        throw new Error("Option not found");
-    }
-
-    return option;
+    return updatedOption;
 };
 
 const deleteOption = async (optionId) => {
