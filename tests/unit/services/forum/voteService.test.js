@@ -3,14 +3,14 @@
  * Tests voting business logic
  */
 
-import * as voteService from "../../../src/service/forum/voteService.js";
-import Forum from "../../../src/models/forum/forum.js";
-import ForumMembership from "../../../src/models/forum/forumMembership.js";
-import ForumBan from "../../../src/models/forum/forumBan.js";
-import Post from "../../../src/models/forum/post.js";
-import Answer from "../../../src/models/forum/answer.js";
-import Vote from "../../../src/models/forum/vote.js";
-import { connectTestDB, clearTestDB, disconnectTestDB } from "../../integration/setup.js";
+import * as voteService from "../../../../src/service/forum/voteService.js";
+import Forum from "../../../../src/models/forum/forum.js";
+import ForumMembership from "../../../../src/models/forum/forumMembership.js";
+import ForumBan from "../../../../src/models/forum/forumBan.js";
+import Post from "../../../../src/models/forum/post.js";
+import Answer from "../../../../src/models/forum/answer.js";
+import Vote from "../../../../src/models/forum/vote.js";
+import { connectTestDB, clearTestDB, disconnectTestDB } from "../../../integration/setup.js";
 
 beforeAll(async () => {
   await connectTestDB();

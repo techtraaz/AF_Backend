@@ -3,12 +3,12 @@
  * Tests business logic without full HTTP stack
  */
 
-import * as forumService from "../../../src/service/forum/forumService.js";
-import Forum from "../../../src/models/forum/forum.js";
-import ForumMembership from "../../../src/models/forum/forumMembership.js";
-import ForumBan from "../../../src/models/forum/forumBan.js";
-import { connectTestDB, clearTestDB, disconnectTestDB } from "../../integration/setup.js";
-import { ROLES } from "../../../src/utils/constants.js";
+import * as forumService from "../../../../src/service/forum/forumService.js";
+import Forum from "../../../../src/models/forum/forum.js";
+import ForumMembership from "../../../../src/models/forum/forumMembership.js";
+import ForumBan from "../../../../src/models/forum/forumBan.js";
+import { connectTestDB, clearTestDB, disconnectTestDB } from "../../../integration/setup.js";
+import { ROLES } from "../../../../src/utils/constants.js";
 
 beforeAll(async () => {
   await connectTestDB();
