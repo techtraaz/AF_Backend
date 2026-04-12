@@ -109,35 +109,30 @@ const getAllCourses = async (filters = {}) => {
     const query = {};
     
     if (filters.categoryId) {
-        // Validate categoryId format
         if (!/^[0-9a-fA-F]{24}$/.test(filters.categoryId)) {
             throw new Error("Invalid category ID format");
         }
         query.categoryId = filters.categoryId;
     }
 
-    // Support both levelId (new) and level (legacy) filters
     if (filters.levelId) {
         if (!/^[0-9a-fA-F]{24}$/.test(filters.levelId)) {
             throw new Error("Invalid level ID format");
         }
         query.levelId = filters.levelId;
     } else if (filters.level) {
-        // Validate level value
         if (!['Beginner', 'Intermediate', 'Advanced'].includes(filters.level)) {
             throw new Error("Invalid level. Must be Beginner, Intermediate, or Advanced");
         }
         query.level = filters.level;
     }
 
-    // Support both languageId (new) and language (legacy) filters
     if (filters.languageId) {
         if (!/^[0-9a-fA-F]{24}$/.test(filters.languageId)) {
             throw new Error("Invalid language ID format");
         }
         query.languageId = filters.languageId;
     } else if (filters.language) {
-        // Validate language value
         if (filters.language !== 'English') {
             throw new Error("Currently only English language is supported");
         }
@@ -145,7 +140,6 @@ const getAllCourses = async (filters = {}) => {
     }
 
     if (filters.createdById) {
-        // Validate createdById format
         if (!/^[0-9a-fA-F]{24}$/.test(filters.createdById)) {
             throw new Error("Invalid creator ID format");
         }
@@ -153,14 +147,7 @@ const getAllCourses = async (filters = {}) => {
     }
 
     if (filters.isPublished !== undefined) {
-        // Validate isPublished is boolean
-        if (typeof filters.isPublished === 'string') {
-            query.isPublished = filters.isPublished === 'true';
-        } else if (typeof filters.isPublished === 'boolean') {
-            query.isPublished = filters.isPublished;
-        } else {
-            throw new Error("isPublished must be a boolean value");
-        }
+        query.isPublished = filters.isPublished;
     }
 
     const courses = await Course.find(query)
@@ -471,19 +458,22 @@ const decrementTotalEnrollments = async (courseId) => {
     return updatedCourse;
 };
 
-const getCoursesByCreator = async (creatorId) => {
-    // Validate creatorId format
+const getCoursesByCreator = async (creatorId, isPublishedOnly = false) => {
     if (!/^[0-9a-fA-F]{24}$/.test(creatorId)) {
         throw new Error("Invalid creator ID format");
     }
 
-    // Validate creator exists
     const creator = await User.findById(creatorId);
     if (!creator) {
         throw new Error("Creator user not found");
     }
 
-    const courses = await Course.find({ createdById: creatorId })
+    const query = { createdById: creatorId };
+    if (isPublishedOnly) {
+        query.isPublished = true;
+    }
+
+    const courses = await Course.find(query)
         .sort({ createdAt: -1 })
         .populate('categoryId', 'name slug description');
     

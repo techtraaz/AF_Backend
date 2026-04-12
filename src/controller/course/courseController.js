@@ -18,8 +18,20 @@ const getAllCourses = async (req, res) => {
             language: req.query.language,
             languageId: req.query.languageId,
             createdById: req.query.createdById,
-            isPublished: req.query.isPublished
+            isPublished: req.query.isPublished === 'true' ? true : req.query.isPublished === 'false' ? false : undefined
         };
+        
+        // Security: Restrict unpublished course access based on user role
+        const shouldForcePublished = !req.user || 
+                                    req.user.role === 'REFUGEE' || 
+                                    (req.user.role === 'CONTENT_CONTRIBUTOR' && !filters.createdById);
+        
+        if (shouldForcePublished) {
+            filters.isPublished = true;
+        }
+        
+        console.log(`[Courses API] User: ${req.user?.role || 'none'}, Forced published: ${shouldForcePublished}, Query: isPublished=${filters.isPublished}`);
+        
         const courses = await courseService.getAllCourses(filters);
         return res.success("Courses retrieved successfully", courses);
     } catch (error) {
@@ -30,6 +42,17 @@ const getAllCourses = async (req, res) => {
 const getCourseById = async (req, res) => {
     try {
         const course = await courseService.getCourseById(req.params.id);
+        
+        // Restrict access to unpublished courses
+        if (!course.isPublished) {
+            const isOwner = req.user && course.createdById._id.toString() === req.user._id.toString();
+            const isAdmin = req.user && req.user.role === 'ADMIN';
+            
+            if (!isOwner && !isAdmin) {
+                return res.notFound("Course not found");
+            }
+        }
+        
         return res.success("Course retrieved successfully", course);
     } catch (error) {
         return res.notFound(error.message);
@@ -74,7 +97,11 @@ const unpublishCourse = async (req, res) => {
 
 const getCoursesByCreator = async (req, res) => {
     try {
-        const courses = await courseService.getCoursesByCreator(req.params.creatorId);
+        const isPublishedOnly = !req.user || 
+                               req.user.role === 'REFUGEE' || 
+                               (req.user.role === 'CONTENT_CONTRIBUTOR' && req.user._id.toString() !== req.params.creatorId);
+        
+        const courses = await courseService.getCoursesByCreator(req.params.creatorId, isPublishedOnly);
         return res.success("Courses retrieved successfully", courses);
     } catch (error) {
         return res.error(error.message);
